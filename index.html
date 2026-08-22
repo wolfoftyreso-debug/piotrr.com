@@ -9,278 +9,269 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232456ff'/%3E%3Cpath transform='translate(6 0)' fill='%23f6f4ef' fill-rule='evenodd' d='M14 8h19a16 16 0 0 1 0 32H22v16H14V8Zm8 10v12h11a6 6 0 0 0 0-12H22Z'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Piotrr — Europa, redo att leverera.">
-<meta property="og:description" content="Den verifierade marknadsplatsen för gränsöverskridande underentreprenad. Beställaransvaret är täckt — vi bär dokumentationen och revisionsspåret.">
+<meta property="og:description" content="Den verifierade marknadsplatsen för gränsöverskridande underentreprenad. Ett symbolspråk vägleder genom hela affären — begripligt oavsett språk.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f6f4ef; --fg: #101217; --fg-muted: #5f6773; --fg-faint: #8b929c;
     --card: #ffffff; --card-2: #eceff3; --line: #dde1e6; --hair: #e6e9ee;
-    --accent: #2456ff; --accent-2: #1739b8; --on-accent: #ffffff;
+    --accent: #2456ff; --accent-2: #1739b8; --on-accent: #ffffff; --accent-soft: #e7ecfb;
+    --ink-blue: #2e4660;
     --verified: #167a56; --verified-fg: #0f5c3f; --verified-bg: #e7f4ec; --verified-line: #bfe3cf;
+    --info: #2f63e6; --warn: #a86206; --wait: #7b828e;
     --band: #101217; --band-fg: #f4f2ec; --band-muted: #a7adb8; --band-line: #262a33;
     --shadow: 0 1px 2px rgba(16,18,23,.04), 0 8px 30px rgba(16,18,23,.06);
+    --shadow-lg: 0 10px 24px rgba(16,18,23,.10), 0 30px 70px rgba(16,18,23,.16);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #0c0e13; --fg: #eceef2; --fg-muted: #a2aab6; --fg-faint: #767e8b;
       --card: #14171e; --card-2: #10131a; --line: #242832; --hair: #1e222b;
-      --accent: #5c82ff; --accent-2: #86a1ff; --on-accent: #0a0c10;
+      --accent: #5c82ff; --accent-2: #86a1ff; --on-accent: #0a0c10; --accent-soft: #1c1836;
+      --ink-blue: #9fb4cc;
       --verified: #4ecb93; --verified-fg: #7ddcb0; --verified-bg: #10231b; --verified-line: #1f4535;
+      --info: #6f9bff; --warn: #e0a53c; --wait: #9aa0ac;
       --band: #06080c; --band-fg: #eceef2; --band-muted: #8b929c; --band-line: #1c2028;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 34px rgba(0,0,0,.4);
+      --shadow-lg: 0 12px 28px rgba(0,0,0,.5), 0 34px 74px rgba(0,0,0,.65);
     }
   }
   :root[data-theme="dark"] {
     --bg: #0c0e13; --fg: #eceef2; --fg-muted: #a2aab6; --fg-faint: #767e8b;
     --card: #14171e; --card-2: #10131a; --line: #242832; --hair: #1e222b;
-    --accent: #5c82ff; --accent-2: #86a1ff; --on-accent: #0a0c10;
+    --accent: #5c82ff; --accent-2: #86a1ff; --on-accent: #0a0c10; --accent-soft: #1c1836;
+    --ink-blue: #9fb4cc;
     --verified: #4ecb93; --verified-fg: #7ddcb0; --verified-bg: #10231b; --verified-line: #1f4535;
+    --info: #6f9bff; --warn: #e0a53c; --wait: #9aa0ac;
     --band: #06080c; --band-fg: #eceef2; --band-muted: #8b929c; --band-line: #1c2028;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 34px rgba(0,0,0,.4);
+    --shadow-lg: 0 12px 28px rgba(0,0,0,.5), 0 34px 74px rgba(0,0,0,.65);
   }
 
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-    font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-  h1, h2, h3 { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  @media (prefers-reduced-motion: reduce){ html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  h1,h2,h3 { font-family: "Newsreader", Georgia, "Times New Roman", serif; font-weight: 600; line-height: 1.06; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
   p { margin: 0; }
   a { color: var(--accent); text-decoration: none; }
   a:hover { color: var(--accent-2); }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 5px; }
   .wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 28px; }
-  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
-  .eyebrow {
-    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; font-weight: 500;
-    letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
-  }
+  .eyebrow { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
   .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
 
-  /* ---- wordmark ---- */
-  .wordmark { font-family: "Schibsted Grotesk", sans-serif; font-weight: 800; letter-spacing: -0.02em; color: var(--fg); white-space: nowrap; font-size: 20px; }
-  .wordmark .rr { letter-spacing: -0.09em; }
+  /* ---- symbols (the language) ---- */
+  .ic { width: 1.15em; height: 1.15em; vertical-align: -0.22em; flex: none; color: var(--ink-blue); }
+  .ic-24 { width: 24px; height: 24px; }
+  .ic-30 { width: 30px; height: 30px; }
+  .ic-40 { width: 40px; height: 40px; }
+  .is-ok { color: var(--verified); } .is-wait { color: var(--wait); } .is-prog { color: var(--info); }
+  .is-attn { color: var(--warn); } .is-accent { color: var(--accent); } .is-ink { color: var(--fg); }
 
-  /* ---- nav ---- */
-  header.nav {
-    position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--hair);
-  }
-  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 20px; }
-  .nav-links { display: flex; align-items: center; gap: 28px; }
-  .nav-links a.link { color: var(--fg-muted); font-size: 15px; font-weight: 500; }
-  .nav-links a.link:hover { color: var(--fg); }
-  .nav-right { display: flex; align-items: center; gap: 14px; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 9px; font-family: "Public Sans", sans-serif;
-    font-size: 15px; font-weight: 600; padding: 11px 20px; border-radius: 9px; cursor: pointer;
-    border: 1px solid transparent; transition: transform .12s ease, background .15s ease, border-color .15s ease;
-  }
+  .wordmark { font-family: "Newsreader", Georgia, serif; font-weight: 600; letter-spacing: -0.02em; color: var(--fg); white-space: nowrap; }
+  .wordmark .rr { letter-spacing: -0.06em; }
+
+  header.nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--hair); }
+  .nav-in { display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 20px; }
+  .nav-links { display: flex; align-items: center; gap: 26px; font-size: 15px; font-weight: 500; }
+  .nav-links a { color: var(--fg-muted); } .nav-links a:hover { color: var(--fg); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 600; padding: 11px 20px; border-radius: 9px; border: 1px solid transparent; cursor: pointer; transition: background .15s, transform .1s, border-color .15s, color .15s; }
+  .btn .ic { color: currentColor; }
   .btn-primary { background: var(--accent); color: var(--on-accent); }
   .btn-primary:hover { background: var(--accent-2); color: var(--on-accent); transform: translateY(-1px); }
   .btn-ghost { background: transparent; color: var(--fg); border-color: var(--line); }
-  .btn-ghost:hover { border-color: var(--fg-muted); color: var(--fg); }
-  .theme-toggle { width: 38px; height: 38px; display: inline-grid; place-items: center; border-radius: 9px; border: 1px solid var(--line); background: transparent; color: var(--fg-muted); cursor: pointer; }
-  .theme-toggle:hover { color: var(--fg); border-color: var(--fg-muted); }
-  .theme-toggle .moon { display: none; }
-  :root[data-theme="dark"] .theme-toggle .sun { display: none; }
-  :root[data-theme="dark"] .theme-toggle .moon { display: block; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-toggle .sun { display: none; } :root:not([data-theme="light"]) .theme-toggle .moon { display: block; } }
+  .btn-ghost:hover { border-color: var(--fg-muted); }
+  .tgl { width: 38px; height: 38px; border-radius: 9px; border: 1px solid var(--line); background: transparent; color: var(--fg-muted); display: grid; place-items: center; cursor: pointer; }
+  .tgl:hover { color: var(--fg); }
+  .tgl .moon { display: none; } :root[data-theme="dark"] .tgl .moon{display:block} :root[data-theme="dark"] .tgl .sun{display:none}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tgl .moon{display:block} :root:not([data-theme="light"]) .tgl .sun{display:none} }
 
-  /* ---- corridor ticker ---- */
   .ticker { background: var(--band); color: var(--band-muted); border-bottom: 1px solid var(--band-line); font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: 0.06em; }
-  .ticker-inner { display: flex; gap: 10px; align-items: center; height: 34px; overflow: hidden; }
+  .ticker-in { display: flex; gap: 10px; align-items: center; height: 34px; overflow: hidden; }
   .ticker b { color: var(--band-fg); font-weight: 500; }
 
-  /* ---- hero ---- */
-  .hero { padding: 76px 0 60px; }
-  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
-  .hero h1 { font-size: clamp(40px, 6vw, 68px); font-weight: 800; }
+  .hero { padding: 74px 0 58px; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 54px; align-items: center; }
+  .hero h1 { font-size: clamp(40px, 6vw, 66px); font-weight: 600; }
   .hero .lede { margin-top: 22px; font-size: 19px; color: var(--fg-muted); max-width: 42ch; }
-  .hero .cta-row { margin-top: 32px; display: flex; gap: 14px; flex-wrap: wrap; }
-  .hero .assurance { margin-top: 26px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--fg-muted); }
-  .hero .assurance svg { flex: none; }
+  .hero .cta-row { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero .assurance { margin-top: 26px; display: flex; align-items: center; gap: 11px; font-size: 14px; color: var(--fg-muted); }
 
-  /* ---- verification panel (the thesis) ---- */
+  /* verification panel */
   .vpanel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
-  .vpanel-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--hair); background: var(--card-2); }
-  .vpanel-head .co { font-family: "Schibsted Grotesk", sans-serif; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
-  .vpanel-head .org { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--fg-faint); }
-  .vlist { list-style: none; margin: 0; padding: 6px 10px 10px; }
-  .vitem { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 12px; padding: 8.5px 10px; border-radius: 8px; }
-  .vitem .check { width: 22px; height: 22px; }
-  .vitem .check circle { fill: var(--card-2); transition: fill .3s ease; }
-  .vitem .check path { stroke: var(--verified); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-dasharray: 20; stroke-dashoffset: 20; }
+  .vpanel-head { display: flex; align-items: center; gap: 12px; padding: 15px 20px; border-bottom: 1px solid var(--hair); background: var(--card-2); }
+  .vpanel-head .co { font-family: "Newsreader", serif; font-weight: 600; font-size: 16px; }
+  .vpanel-head .org { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--fg-faint); }
+  .vlist { list-style: none; margin: 0; padding: 6px 12px 8px; }
+  .vitem { display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 13px; padding: 9px 8px; }
   .vitem .lbl { font-size: 14.5px; font-weight: 500; }
-  .vitem .lbl .src { display: block; font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--fg-faint); font-weight: 400; letter-spacing: 0.02em; }
-  .vitem .scope { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.04em; color: var(--fg-muted); background: var(--card-2); border: 1px solid var(--hair); border-radius: 5px; padding: 3px 7px; }
-  .vitem.done .check circle { fill: var(--verified-bg); }
-  .vitem.done .check path { stroke-dashoffset: 0; transition: stroke-dashoffset .45s ease; }
-  .vbadge { margin: 4px 12px 16px; display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 11px; background: var(--verified-bg); border: 1px solid var(--verified-line); color: var(--verified-fg); font-weight: 700; font-size: 14.5px; opacity: 0; transform: translateY(6px); transition: opacity .5s ease, transform .5s ease; }
+  .vitem .lbl small { display: block; font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--fg-faint); font-weight: 400; letter-spacing: 0.02em; }
+  .vitem .sc { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.03em; color: var(--fg-muted); background: var(--card-2); border: 1px solid var(--hair); border-radius: 5px; padding: 3px 7px; display: inline-flex; align-items: center; gap: 4px; }
+  .vitem .mk { opacity: 0; transform: scale(.6); transition: opacity .3s, transform .3s; }
+  .vitem.done .mk { opacity: 1; transform: none; }
+  .vbadge { margin: 6px 14px 16px; display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-radius: 11px; background: var(--verified-bg); border: 1px solid var(--verified-line); color: var(--verified-fg); font-weight: 700; font-size: 14.5px; opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s; }
   .vbadge.on { opacity: 1; transform: none; }
-  .vbadge svg { flex: none; }
 
-  /* ---- sections ---- */
-  section { padding: 78px 0; }
+  section { padding: 76px 0; }
   .sec-head { max-width: 60ch; }
-  .sec-head h2 { font-size: clamp(28px, 4vw, 40px); margin-top: 12px; }
-  .sec-head p { margin-top: 16px; color: var(--fg-muted); font-size: 18px; }
-
-  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+  .sec-head .eyebrow { display: inline-flex; align-items: center; gap: 8px; }
+  .sec-head h2 { font-size: clamp(28px, 4vw, 40px); margin-top: 14px; }
+  .sec-head p { margin-top: 15px; color: var(--fg-muted); font-size: 18px; }
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s, transform .6s; }
   .reveal.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+  @media (prefers-reduced-motion: reduce){ .reveal { opacity: 1; transform: none; transition: none; } }
 
-  /* steps */
-  .steps { margin-top: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-  .step { border-top: 2px solid var(--accent); padding-top: 20px; }
-  .step .k { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--accent); font-weight: 500; }
-  .step h3 { font-size: 21px; margin: 12px 0 8px; }
+  .steps { margin-top: 42px; display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; }
+  .step { border-top: 2px solid var(--accent); padding-top: 18px; }
+  .step .si { width: 44px; height: 44px; border-radius: 11px; background: var(--card-2); display: grid; place-items: center; margin-bottom: 14px; }
+  .step .si .ic { color: var(--fg); }
+  .step .k { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--accent); font-weight: 500; }
+  .step h3 { font-size: 21px; margin: 6px 0 8px; }
   .step p { color: var(--fg-muted); font-size: 15.5px; }
 
-  /* corridors band */
+  /* the deal as a picture story */
+  .story { background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 12px; margin-top: 42px; }
+  .story-track { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(150px, 1fr); gap: 6px; overflow-x: auto; scroll-snap-type: x proximity; padding: 8px; }
+  .beat { scroll-snap-align: start; display: flex; flex-direction: column; gap: 9px; padding: 16px 14px; border-radius: 12px; position: relative; }
+  .beat:not(:last-child)::after { content: ""; position: absolute; right: -3px; top: 34px; width: 6px; height: 6px; border-top: 1.5px solid var(--fg-faint); border-right: 1.5px solid var(--fg-faint); transform: rotate(45deg); }
+  .beat .glyph { width: 52px; height: 52px; border-radius: 13px; background: var(--card-2); display: grid; place-items: center; }
+  .beat .glyph .ic { width: 30px; height: 30px; }
+  .beat .n { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--fg-faint); letter-spacing: 0.08em; }
+  .beat .t { font-weight: 600; font-size: 14.5px; letter-spacing: -0.01em; }
+  .beat .s { font-size: 12.5px; color: var(--fg-muted); line-height: 1.4; }
+  .beat.escrow .glyph { background: var(--verified-bg); }
+  .beat.escrow .glyph .ic { color: var(--verified); }
+  .story-note { display: flex; align-items: center; gap: 9px; padding: 12px 16px 6px; color: var(--fg-faint); font-size: 13px; }
+
+  /* status language */
   .band { background: var(--band); color: var(--band-fg); }
   .band .sec-head h2 { color: var(--band-fg); }
   .band .sec-head p { color: var(--band-muted); }
   .band .eyebrow { color: #6f90ff; }
-  .matrix { margin-top: 40px; border: 1px solid var(--band-line); border-radius: 14px; overflow: hidden; }
+  .stat-grid { margin-top: 38px; display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr)); gap: 12px; }
+  .stat-chip { display: flex; align-items: center; gap: 12px; padding: 15px 16px; border-radius: 12px; border: 1px solid var(--band-line); background: rgba(255,255,255,.03); }
+  .stat-chip .g { width: 30px; height: 30px; flex: none; }
+  .stat-chip .n { font-weight: 700; font-size: 15px; color: var(--band-fg); }
+  .stat-chip .d { font-size: 12px; color: var(--band-muted); margin-top: 1px; }
+
+  /* corridors */
+  .matrix { margin-top: 36px; border: 1px solid var(--band-line); border-radius: 14px; overflow: hidden; }
   .matrix table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
   .matrix th, .matrix td { padding: 15px 16px; text-align: left; border-bottom: 1px solid var(--band-line); }
-  .matrix thead th { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--band-muted); font-weight: 500; }
-  .matrix tbody th { font-family: "Schibsted Grotesk", sans-serif; font-weight: 700; color: var(--band-fg); }
-  .matrix td { color: var(--band-muted); }
+  .matrix thead th { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--band-muted); font-weight: 500; }
+  .matrix tbody th { font-family: "Newsreader", serif; font-weight: 600; color: var(--band-fg); }
+  .matrix td .dot { display: inline-flex; align-items: center; gap: 7px; color: var(--band-fg); }
   .matrix tr:last-child th, .matrix tr:last-child td { border-bottom: none; }
-  .dot { display: inline-flex; align-items: center; gap: 7px; color: var(--band-fg); }
-  .dot i { width: 7px; height: 7px; border-radius: 50%; background: var(--verified); display: inline-block; }
 
-  /* trades */
-  .trades { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 10px; }
-  .trade { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 9px 13px; }
+  /* trades — the visual language */
+  .trades { margin-top: 36px; display: grid; grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 12px; }
+  .trade { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 11px; padding: 13px 15px; box-shadow: var(--shadow); }
+  .trade .ic { width: 26px; height: 26px; }
+  .trade span { font-weight: 600; font-size: 14.5px; letter-spacing: -0.01em; }
 
-  /* requirements list */
-  .reqs { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
-  .req { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: baseline; padding: 15px 0; border-bottom: 1px solid var(--hair); }
-  .req .rk { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--accent); font-weight: 500; min-width: 58px; }
+  /* requirements */
+  .reqs { margin-top: 38px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  .req { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--hair); }
   .req .rt { font-weight: 500; font-size: 15.5px; }
-  .req .rt small { display: block; color: var(--fg-faint); font-weight: 400; font-size: 13px; }
-  .req .rs { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--fg-muted); }
+  .req .rt small { display: block; color: var(--fg-faint); font-weight: 400; font-size: 12.5px; font-family: "IBM Plex Mono", monospace; }
+  .req .rs { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--fg-muted); }
 
-  /* assurance / cta */
-  .assure-card { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 44px; box-shadow: var(--shadow); }
-  .assure-card h2 { font-size: clamp(26px, 3.4vw, 34px); }
-  .assure-card p { margin-top: 16px; color: var(--fg-muted); }
-  .stat-row { display: flex; gap: 30px; margin-top: 26px; }
-  .stat .v { font-family: "Schibsted Grotesk", sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -0.02em; }
-  .stat .l { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-muted); margin-top: 2px; }
-  .cta-final { text-align: left; }
-  .cta-final .btn-primary { font-size: 16px; padding: 14px 26px; }
-  .cta-note { margin-top: 12px; font-size: 13px; color: var(--fg-faint); }
+  /* assurance + cta */
+  .assure { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 44px; box-shadow: var(--shadow); }
+  .assure h2 { font-size: clamp(26px, 3.4vw, 34px); }
+  .assure p { margin-top: 15px; color: var(--fg-muted); }
+  .stat-row { display: flex; gap: 30px; margin-top: 24px; }
+  .stat .v { font-family: "Newsreader", serif; font-weight: 600; font-size: 34px; letter-spacing: -0.02em; }
+  .stat .l { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-muted); margin-top: 2px; }
+  .cta-note { margin-top: 12px; font-size: 13px; color: var(--fg-faint); display: flex; align-items: center; gap: 7px; }
 
-  /* footer */
-  footer { border-top: 1px solid var(--hair); padding: 54px 0 40px; }
-  .foot-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; flex-wrap: wrap; }
+  footer { border-top: 1px solid var(--hair); padding: 52px 0 42px; }
+  .foot-top { display: flex; justify-content: space-between; gap: 30px; flex-wrap: wrap; }
   .foot-tag { color: var(--fg-muted); max-width: 34ch; margin-top: 12px; font-size: 15px; }
-  .foot-cols { display: flex; gap: 60px; flex-wrap: wrap; }
+  .foot-cols { display: flex; gap: 56px; flex-wrap: wrap; }
   .foot-col h4 { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-faint); font-weight: 500; margin: 0 0 12px; }
   .foot-col a { display: block; color: var(--fg-muted); font-size: 14.5px; padding: 4px 0; }
   .foot-col a:hover { color: var(--fg); }
-  .foot-bottom { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--hair); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--fg-faint); font-size: 13px; }
-  .locales { font-family: "IBM Plex Mono", monospace; letter-spacing: 0.04em; }
+  .foot-bottom { margin-top: 42px; padding-top: 22px; border-top: 1px solid var(--hair); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--fg-faint); font-size: 13px; align-items: center; }
+  .locales { font-family: "IBM Plex Mono", monospace; letter-spacing: 0.04em; display: inline-flex; align-items: center; gap: 8px; }
 
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-    .steps { grid-template-columns: 1fr; gap: 26px; }
+    .steps { grid-template-columns: 1fr; gap: 24px; }
     .reqs { grid-template-columns: 1fr; }
-    .assure-card { grid-template-columns: 1fr; padding: 32px; }
+    .assure { grid-template-columns: 1fr; padding: 30px; }
     .nav-links { display: none; }
   }
-  @media (max-width: 560px) {
-    body { font-size: 16px; }
-    .wrap { padding: 0 20px; }
-    section { padding: 56px 0; }
-    .hero { padding: 52px 0 44px; }
-    .stat-row { gap: 22px; }
-    .ticker-inner { font-size: 11px; }
-  }
+  @media (max-width: 560px){ body { font-size: 16px; } .wrap { padding: 0 20px; } section { padding: 54px 0; } .hero { padding: 48px 0 40px; } }
 </style>
 </head>
 <body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="s-byggare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 16a9 9 0 0 1 18 0" fill="currentColor" fill-opacity="0.16"></path><path d="M12 16h24"></path><path d="M17.5 16a6.5 6.5 0 0 0 13 0"></path><path d="M10 42c0-8 6-13 14-13s14 5 14 13"></path></symbol><symbol id="s-svetsare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="15" y="7" width="18" height="24" rx="5" fill="currentColor" fill-opacity="0.16"></rect><rect x="19" y="13" width="10" height="4" rx="2" fill="#fff"></rect><path d="M24 36v5M17 34l-3 4M31 34l3 4"></path></symbol><symbol id="s-elektriker" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M27 4 14 26h8l-3 18 15-24h-8l4-16z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-snickare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="10" width="24" height="9" rx="3" fill="currentColor" fill-opacity="0.16"></rect><path d="M24 19v22"></path></symbol><symbol id="s-malare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="8" width="20" height="9" rx="3" fill="currentColor" fill-opacity="0.16"></rect><path d="M36 13h4v9H24v5M24 27v13"></path></symbol><symbol id="s-murare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="15" width="14" height="8"></rect><rect x="26" y="15" width="14" height="8"></rect><rect x="17" y="27" width="14" height="8" fill="currentColor" fill-opacity="0.16"></rect><path d="M8 27h5v8H8M40 27h-5v8h5"></path></symbol><symbol id="s-rormokare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15h14a9 9 0 0 1 9 9v14M10 23h12a2 2 0 0 1 2 2v13M10 12v14M21 38h15"></path></symbol><symbol id="s-taklaggare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28 24 12l18 16"></path><path d="M31 17V9h6v13M10 28v12M38 28v12"></path></symbol><symbol id="s-golvlaggare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="18" width="32" height="18" fill="currentColor" fill-opacity="0.16"></rect><path d="M8 27h32M24 18v9M18 27v9M32 27v9"></path></symbol><symbol id="s-stad" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M30 6 21 26"></path><path d="M21 26 9 38l14-2z" fill="currentColor" fill-opacity="0.16"></path><path d="m12 36-2 3M16 35l-1 4M20 35v4"></path></symbol><symbol id="s-stallning" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8v32M35 8v32M13 15h22M13 33h22M13 33 35 15M8 40h32"></path></symbol><symbol id="s-sag" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 27h26l6-9H14z" fill="currentColor" fill-opacity="0.16"></path><path d="m8 27 3 5 4-5 3 5 4-5 3 5 4-5"></path></symbol><symbol id="s-borr" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="17" width="20" height="11" rx="3" fill="currentColor" fill-opacity="0.16"></rect><rect x="28" y="19" width="5" height="7"></rect><path d="M33 22.5h8M14 28v9h7v-9"></path></symbol><symbol id="s-spade" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6h12M24 6v16"></path><path d="M17 22h14v8a7 7 0 0 1-14 0z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-skruvmejsel" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="19" y="5" width="10" height="15" rx="4" fill="currentColor" fill-opacity="0.16"></rect><path d="M24 20v13"></path><path d="M21 33h6l-3 7z"></path></symbol><symbol id="s-skiftnyckel" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M29.4 12.6a2 2 0 0 0 0 2.8l3.2 3.2a2 2 0 0 0 2.8 0l7.5-7.5a12 12 0 0 1-15.9 15.9L13.2 40.8a4.24 4.24 0 0 1-6-6L21 21a12 12 0 0 1 15.9-15.9l-7.5 7.5z"></path></symbol><symbol id="s-mattband" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="19" cy="25" r="10.5" fill="currentColor" fill-opacity="0.16"></circle><circle cx="19" cy="25" r="3.5" fill="#fff"></circle><path d="M29.5 28.5H40v6h-6.5"></path></symbol><symbol id="s-vattenpass" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="19" width="36" height="11" rx="3" fill="currentColor" fill-opacity="0.16"></rect><circle cx="24" cy="24.5" r="3.2" fill="#fff"></circle><path d="M17 19v11M31 19v11"></path></symbol><symbol id="s-stege" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6v36M31 6v36M17 14h14M17 22h14M17 30h14M17 38h14"></path></symbol><symbol id="s-skottkarra" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 17h26l-5 11H14z" fill="currentColor" fill-opacity="0.16"></path><circle cx="19" cy="35" r="5"></circle><path d="m28 28 6 7M15 28l-3 8M34 17l8-3"></path></symbol><symbol id="s-hink" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 15h22l-2.5 23h-17z" fill="currentColor" fill-opacity="0.16"></path><path d="M13 15c0-3 5-5 11-5s11 2 11 5"></path><path d="M13 15a11 11 0 0 1 22 0"></path></symbol><symbol id="s-hjalm" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 29a16 16 0 0 1 32 0" fill="currentColor" fill-opacity="0.16"></path><path d="M5 29h38M24 13v5"></path></symbol><symbol id="s-handskar" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 41V20a7 7 0 0 1 14 0v21z" fill="currentColor" fill-opacity="0.16"></path><path d="m31 27 7-5-3-5-5 4M17 35h14"></path></symbol><symbol id="s-glasogon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="25" r="7" fill="currentColor" fill-opacity="0.16"></circle><circle cx="33" cy="25" r="7" fill="currentColor" fill-opacity="0.16"></circle><path d="M22 25h4M8 25H5M40 25h3"></path></symbol><symbol id="s-horselskydd" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 27v-3a13 13 0 0 1 26 0v3"></path><rect x="7" y="27" width="9" height="13" rx="4" fill="currentColor" fill-opacity="0.16"></rect><rect x="32" y="27" width="9" height="13" rx="4" fill="currentColor" fill-opacity="0.16"></rect></symbol><symbol id="s-vast" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h4c0 3 2 5 4 5s4-2 4-5h4l5 11-5 2v18H16V20l-5-2z" fill="currentColor" fill-opacity="0.16"></path><path d="M16 30h16"></path></symbol><symbol id="s-skor" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12h8v10l7 6h11a2 2 0 0 1 2 2v8H12z" fill="currentColor" fill-opacity="0.16"></path><path d="M20 16h-4M20 20h-4"></path></symbol><symbol id="s-gravmaskin" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="33" width="22" height="8" rx="4"></rect><rect x="11" y="22" width="12" height="11" rx="2" fill="currentColor" fill-opacity="0.16"></rect><path d="m23 26 10-10 8 10"></path><path d="m41 26-1 7-7-2z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-kran" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 41h16M16 41V13M8 13h32M36 13v9"></path><path d="M33 25a3 3 0 0 0 6 0"></path></symbol><symbol id="s-truck" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="19" y="21" width="15" height="11" rx="2" fill="currentColor" fill-opacity="0.16"></rect><path d="M21 21v-7h11v7"></path><circle cx="24" cy="37" r="3.5"></circle><circle cx="31" cy="37" r="3.5"></circle><path d="M15 41V10M15 36H6"></path></symbol><symbol id="s-lastbil" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="17" y="15" width="25" height="17" fill="currentColor" fill-opacity="0.16"></rect><path d="M17 32H5v-4l5-7h7"></path><circle cx="11" cy="37" r="3.5"></circle><circle cx="24" cy="37" r="3.5"></circle><circle cx="35" cy="37" r="3.5"></circle></symbol><symbol id="s-betong" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 12 17 5-3 13-16-5z" fill="currentColor" fill-opacity="0.16"></path><path d="m14 19 17 5M17 25l-5 13M27 28l5 10"></path></symbol><symbol id="s-saxlift" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8v4M38 8v4M10 12h28"></path><path d="m13 33 22-12M13 21l22 12"></path><rect x="11" y="33" width="26" height="5" rx="2" fill="currentColor" fill-opacity="0.16"></rect><circle cx="16" cy="41" r="2.5"></circle><circle cx="32" cy="41" r="2.5"></circle></symbol><symbol id="s-forfragan" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="6" width="22" height="30" rx="3" fill="currentColor" fill-opacity="0.16"></rect><path d="M18 14h12M18 20h12M18 26h8"></path></symbol><symbol id="s-pris" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21 21 8h13a2 2 0 0 1 2 2v13L23 36a2 2 0 0 1-3 0L8 24a2 2 0 0 1 0-3z" fill="currentColor" fill-opacity="0.16"></path><circle cx="30" cy="14" r="2.2" fill="#fff"></circle></symbol><symbol id="s-sedel" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="15" width="36" height="18" rx="3" fill="currentColor" fill-opacity="0.16"></rect><circle cx="24" cy="24" r="4.5" fill="#fff"></circle><path d="M12 21v6M36 21v6"></path></symbol><symbol id="s-utbyte" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h24M28 11l6 6-6 6M38 31H14M20 25l-6 6 6 6"></path></symbol><symbol id="s-avtal" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="6" width="22" height="30" rx="3"></rect><path d="M18 14h12M18 20h12"></path><circle cx="31" cy="32" r="7.5" fill="currentColor" fill-opacity="0.16"></circle><path d="m27.5 32 2.5 2.5 5-5.5"></path></symbol><symbol id="s-forvar" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 5 10 11v10c0 9 5.5 14.5 14 17.5C32.5 35.5 38 30 38 21V11z"></path><rect x="17" y="18" width="14" height="9" rx="2" fill="currentColor" fill-opacity="0.16"></rect><circle cx="24" cy="22.5" r="2"></circle></symbol><symbol id="s-delbetalning" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="15"></circle><path d="M24 24V9a15 15 0 0 1 15 15z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-faktura" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="6" width="20" height="28" rx="3"></rect><path d="M16 14h10M16 20h10"></path><circle cx="33" cy="32" r="7.5" fill="currentColor" fill-opacity="0.16"></circle><path d="M33 28.5v7"></path></symbol><symbol id="s-kvitto" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5h20v37l-3.3-3-3.4 3-3.3-3-3.3 3-3.4-3-3.3 3z" fill="currentColor" fill-opacity="0.16"></path><path d="M19 13h10M19 19h10M19 25h6"></path></symbol><symbol id="s-kalender" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="32" height="29" rx="3"></rect><path d="M8 19h32M17 6v8M31 6v8"></path><rect x="14" y="25" width="7" height="6" rx="1.5" fill="currentColor" fill-opacity="0.16"></rect></symbol><symbol id="s-tid" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="15.5"></circle><path d="M24 24V14.5M24 24l6.5 4"></path></symbol><symbol id="s-verifierad" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 5 10 11v10c0 9 5.5 14.5 14 17.5C32.5 35.5 38 30 38 21V11z" fill="currentColor" fill-opacity="0.16"></path><path d="m17.5 23 4.5 4.5 9-10"></path></symbol><symbol id="s-vantar" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6h18M15 42h18M17 6c0 9 7 9 7 18s-7 9-7 18M31 6c0 9-7 9-7 18s7 9 7 18"></path></symbol><symbol id="s-pagar" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M39.5 24a15.5 15.5 0 1 1-4.6-11M40 8v9h-9"></path></symbol><symbol id="s-klart" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="15.5" fill="currentColor" fill-opacity="0.16"></circle><path d="m16.5 24.5 5.5 5.5 10-11.5"></path></symbol><symbol id="s-problem" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 7 43 40H5z" fill="currentColor" fill-opacity="0.16"></path><path d="M24 19v9M24 33.5v.01"></path></symbol><symbol id="s-fraga" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 17a7.5 7.5 0 1 1 10.5 7c-2.6 1.6-3 3-3 5.5M24 37v.01"></path></symbol><symbol id="s-stopp-vanta" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M36 22V9a3 3 0 0 0-6 0v11M30 20V6a3 3 0 0 0-6 0v14M24 20V8a3 3 0 0 0-6 0v16"></path><path d="m18 26-3.4-4.2a3.2 3.2 0 0 0-5.2 3.8L16 36c2.8 4.4 6.6 7 12 7 8 0 14-6 14-14v-7a3 3 0 0 0-6 0"></path></symbol><symbol id="s-meddelande" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="10" width="34" height="22" rx="6" fill="currentColor" fill-opacity="0.16"></rect><path d="M17 32v8l8-8M17 21h.01M24 21h.01M31 21h.01"></path></symbol><symbol id="s-ring" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M44 33.8v6a4 4 0 0 1-4.4 4A40 40 0 0 1 4.2 8.4 4 4 0 0 1 8.2 4h6a4 4 0 0 1 4 3.4c.3 2 .8 4 1.6 5.9a4 4 0 0 1-.9 4.2l-2.5 2.5a32 32 0 0 0 11.6 11.6l2.5-2.5a4 4 0 0 1 4.2-.9c1.9.8 3.9 1.3 5.9 1.6a4 4 0 0 1 3.4 4z"></path></symbol><symbol id="s-foto-bevis" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="14" width="36" height="24" rx="4" fill="currentColor" fill-opacity="0.16"></rect><circle cx="24" cy="26" r="7" fill="#fff"></circle><path d="m17 14 3-5h8l3 5"></path></symbol><symbol id="s-ladda-upp" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 29V9M15.5 17.5 24 9l8.5 8.5M8 33v3a5 5 0 0 0 5 5h22a5 5 0 0 0 5-5v-3"></path></symbol><symbol id="s-plats" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 42.5S10.5 31 10.5 21a13.5 13.5 0 0 1 27 0C37.5 31 24 42.5 24 42.5z" fill="currentColor" fill-opacity="0.16"></path><circle cx="24" cy="21" r="5" fill="#fff"></circle></symbol><symbol id="s-betyg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m24 5.5 5.7 11.6 12.8 1.9-9.3 9 2.2 12.7L24 34.7l-11.4 6 2.2-12.7-9.3-9 12.8-1.9z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-sprak" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="15.5"></circle><path d="M8.5 24h31M24 8.5c-5.5 8-5.5 23 0 31M24 8.5c5.5 8 5.5 23 0 31"></path></symbol><symbol id="s-hjalp" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 26v-2a14 14 0 0 1 28 0v2"></path><rect x="7" y="26" width="8" height="11" rx="3" fill="currentColor" fill-opacity="0.16"></rect><rect x="33" y="26" width="8" height="11" rx="3" fill="currentColor" fill-opacity="0.16"></rect><path d="M38 37v2a4 4 0 0 1-4 4h-6"></path></symbol><symbol id="s-kopare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="17" r="7"></circle><path d="M10 42c0-8 6-13 14-13s14 5 14 13"></path></symbol><symbol id="s-arbetslag" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="16" r="6"></circle><path d="M6 38c0-7 5-11 11-11s11 4 11 11"></path><circle cx="34" cy="18" r="5"></circle><path d="M28 36c1-6 4.5-9 8.5-9 3 0 5.5 1.5 7 4"></path></symbol><symbol id="s-minigravare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="34" width="16" height="7" rx="3.5"></rect><path d="M16 34v-7h9v7"></path><path d="m25 29 8-9M33 20l6 8"></path><path d="m39 28-1 6-6-2z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-traktor" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="31" r="9"></circle><circle cx="14" cy="31" r="3"></circle><circle cx="37" cy="35" r="5"></circle><path d="M23 31v-9h-1v-8h9l5 12h6v9h-5M23 27h9"></path></symbol><symbol id="s-hjullastare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="34" r="6"></circle><circle cx="37" cy="34" r="6"></circle><rect x="26" y="18" width="14" height="10" rx="2" fill="currentColor" fill-opacity="0.16"></rect><path d="M26 24H14l-4 6"></path><path d="M12 24H4v10h6z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-flakbil" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 30V18h10l4 8v4M4 30h4M22 30h22v-4H18"></path><rect x="22" y="16" width="12" height="10" fill="currentColor" fill-opacity="0.16"></rect><circle cx="12" cy="34" r="3.5"></circle><circle cx="30" cy="34" r="3.5"></circle><circle cx="39" cy="34" r="3.5"></circle></symbol><symbol id="s-skapbil" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 31V15h24l12 8h4v8h-5M4 31h5M13 31h18" fill="none"></path><path d="M28 15l12 8H28z" fill="currentColor" fill-opacity="0.16"></path><circle cx="13" cy="33" r="3.5"></circle><circle cx="36" cy="33" r="3.5"></circle></symbol><symbol id="s-kranbil" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="31" width="36" height="6" rx="2"></rect><circle cx="12" cy="41" r="3"></circle><circle cx="30" cy="41" r="3"></circle><path d="M12 31 32 10M32 10v9"></path><path d="M29 21a3 3 0 0 0 6 0"></path></symbol><symbol id="s-slap" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="14" width="24" height="14" fill="currentColor" fill-opacity="0.16"></rect><path d="M28 24h14"></path><circle cx="16" cy="32" r="3.5"></circle><circle cx="43" cy="24" r="2"></circle></symbol><symbol id="s-villa" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22 24 10l14 12v18H10z" fill="currentColor" fill-opacity="0.16"></path><rect x="20" y="30" width="8" height="10" fill="#fff"></rect></symbol><symbol id="s-parhus" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 40V22l10-8 10 8v18z"></path><path d="M24 40V22l10-8 10 8v18z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-lagenhetshus" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="8" width="28" height="32"></rect><rect x="15" y="13" width="6" height="6" fill="currentColor" fill-opacity="0.16"></rect><rect x="27" y="13" width="6" height="6" fill="currentColor" fill-opacity="0.16"></rect><rect x="15" y="23" width="6" height="6" fill="currentColor" fill-opacity="0.16"></rect><rect x="27" y="23" width="6" height="6" fill="currentColor" fill-opacity="0.16"></rect><rect x="21" y="33" width="6" height="7" fill="currentColor" fill-opacity="0.16"></rect></symbol><symbol id="s-stuga-attefall" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 28 24 18l16 10v12H8z" fill="currentColor" fill-opacity="0.16"></path><path d="M32 23v-9h5v12"></path></symbol><symbol id="s-garage" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18 24 8l18 10v22H6z"></path><rect x="13" y="24" width="22" height="16" fill="currentColor" fill-opacity="0.16"></rect><path d="M13 30h22M13 35h22"></path></symbol><symbol id="s-stomme-bygge" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22 24 10l14 12"></path><path d="M13 40V25M35 40V25M13 33h22M8 40h32M13 25h22" stroke-dasharray="0"></path><path d="M18 25v8M30 25v8" stroke="#7d97b0"></path></symbol><symbol id="s-slagga" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="14" height="12" rx="2" fill="currentColor" fill-opacity="0.16"></rect><path d="M20 20 40 42"></path></symbol><symbol id="s-murslev" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26 22 12l8 8-14 14z" fill="currentColor" fill-opacity="0.16"></path><path d="m30 20 8 8"></path></symbol><symbol id="s-virke" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="32" height="7"></rect><rect x="8" y="21" width="32" height="7" fill="currentColor" fill-opacity="0.16"></rect><rect x="8" y="30" width="32" height="7"></rect></symbol><symbol id="s-tegel" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="18" width="24" height="14" fill="currentColor" fill-opacity="0.16"></rect><path d="M8 18l8-6h24l-8 6M40 12v14l-8 6"></path></symbol><symbol id="s-betongsack" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 12h20v26a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4z" fill="currentColor" fill-opacity="0.16"></path><path d="M14 12l4-5h12l4 5M14 24c4 2 16 2 20 0"></path></symbol><symbol id="s-el-o-kabel" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6v8M30 6v8"></path><path d="M14 14h20v8a10 10 0 0 1-20 0z" fill="currentColor" fill-opacity="0.16"></path><path d="M24 32v5c0 3-2 5-5 5"></path></symbol><symbol id="s-skruv" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="10" r="5.5"></circle><path d="M21 10h6M24 16v22M19 22l10 3M19 28l10 3M19 34l7 2"></path></symbol><symbol id="s-spik" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8h16M24 8v30"></path><path d="M21 38l3 6 3-6z" fill="#2e4660"></path></symbol><symbol id="s-fargburk" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="18" width="24" height="22" rx="2" fill="currentColor" fill-opacity="0.16"></rect><path d="M12 18a12 12 0 0 1 24 0M12 24h24"></path></symbol><symbol id="s-glas" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="8" width="28" height="32" rx="2"></rect><path d="M18 30 30 14M24 34l10-12"></path></symbol><symbol id="s-kyla-o-varme" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 28V10a4 4 0 0 1 8 0v18a8 8 0 1 1-8 0z"></path><circle cx="24" cy="34" r="4" fill="#2e4660"></circle></symbol><symbol id="s-plattsattare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="11" height="11"></rect><rect x="23" y="8" width="11" height="11" fill="currentColor" fill-opacity="0.16"></rect><rect x="8" y="23" width="11" height="11" fill="currentColor" fill-opacity="0.16"></rect><path d="M30 30l10 4-6 6z" fill="currentColor" fill-opacity="0.16"></path></symbol><symbol id="s-glasmastare" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="8" width="28" height="32" rx="2"></rect><circle cx="24" cy="24" r="6" fill="currentColor" fill-opacity="0.16"></circle><path d="M18 24h12M24 18v12"></path></symbol><symbol id="s-markarbete" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h8M14 6v12"></path><path d="M10 18h8v5a4 4 0 0 1-8 0z" fill="currentColor" fill-opacity="0.16"></path><path d="M22 38c3-7 7-10 11-10s9 3 11 10z" fill="currentColor" fill-opacity="0.16"></path><path d="M4 38h40"></path></symbol><symbol id="s-ventilation" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="3.5" fill="#2e4660"></circle><path d="M24 20c0-9 8-9 8-4 0 4-5 4-8 4zM28 24c9 0 9 8 4 8-4 0-4-5-4-8zM24 28c0 9-8 9-8 4 0-4 5-4 8-4zM20 24c-9 0-9-8-4-8 4 0 4 5 4 8z"></path></symbol><symbol id="s-tradgard" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M40 8C20 8 8 20 8 40c20 0 32-12 32-32z" fill="currentColor" fill-opacity="0.16"></path><path d="M12 36c8-10 16-18 24-24"></path></symbol><symbol id="s-framat" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24h30M30 16l8 8-8 8"></path></symbol><symbol id="s-tillbaka" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M40 24H10M18 16l-8 8 8 8"></path></symbol><symbol id="s-upp" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 40V10M16 18l8-8 8 8"></path></symbol><symbol id="s-ner" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8v30M16 30l8 8 8-8"></path></symbol><symbol id="s-byt-plats" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8v26M9 26l8 8 8-8M31 40V14M23 22l8-8 8 8"></path></symbol><symbol id="s-angra" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10l-8 8 8 8M10 18h18a10 10 0 0 1 0 20h-8"></path></symbol><symbol id="s-oppna-stort" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M28 8h12v12M40 8 26 22M20 40H8V28M8 40l14-14"></path></symbol><symbol id="s-valj" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8l24 10-10 4-4 10z" fill="currentColor" fill-opacity="0.16"></path><path d="M24 26l10 10"></path></symbol><symbol id="s-nasta-steg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 36c8 0 8-24 16-24h14M32 6l6 6-6 6"></path></symbol><symbol id="s-mal" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="15.5"></circle><circle cx="24" cy="24" r="8"></circle><circle cx="24" cy="24" r="2" fill="#2e4660"></circle></symbol><symbol id="s-lagg-till" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 10v28M10 24h28"></path></symbol><symbol id="s-stang" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12l24 24M36 12 12 36"></path></symbol><symbol id="s-sok" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="21" cy="21" r="11"></circle><path d="M30 30l10 10"></path></symbol><symbol id="s-skriv-andra" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 40l2-8L30 12l6 6-20 20z" fill="currentColor" fill-opacity="0.16"></path><path d="m27 15 6 6"></path></symbol><symbol id="s-slang" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14h28M18 14V9h12v5M13 14l2 26h18l2-26M20 21v12M28 21v12"></path></symbol><symbol id="s-skicka" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M42 6 6 20l12 6 4 14z" fill="currentColor" fill-opacity="0.16"></path><path d="M42 6 18 26"></path></symbol><symbol id="s-ladda-ner" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8v22M15 21l9 9 9-9M8 38h32"></path></symbol><symbol id="s-checklista" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12h20M20 24h20M20 36h20M6 13l2.5 2.5L13 10M6 25l2.5 2.5L13 22M6 37l2.5 2.5L13 34"></path></symbol><symbol id="s-last" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="22" width="26" height="18" rx="4" fill="currentColor" fill-opacity="0.16"></rect><path d="M16 22v-6a8 8 0 0 1 16 0v6M24 29v4"></path></symbol><symbol id="s-visa" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24s7-12 20-12 20 12 20 12-7 12-20 12S4 24 4 24z"></path><circle cx="24" cy="24" r="5" fill="currentColor" fill-opacity="0.16"></circle></symbol></svg>
 
-<!-- corridor ticker -->
 <div class="ticker">
-  <div class="wrap"><div class="ticker-inner mono">
+  <div class="wrap"><div class="ticker-in mono">
     <span>KORRIDORER</span><b>LT · PL · LV · EE</b><span>→</span><b>SE · DE · DK</b>
     <span style="margin-left:auto">12 verifierade korridorer · destinationsmedveten</span>
   </div></div>
 </div>
 
-<!-- nav -->
 <header class="nav">
-  <div class="wrap"><div class="nav-inner">
+  <div class="wrap"><div class="nav-in">
     <a href="#top" aria-label="Piotrr" style="display:flex;align-items:center;gap:10px">
       <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="var(--accent)"/><path transform="translate(6 0)" fill="var(--on-accent)" fill-rule="evenodd" d="M14 8h19a16 16 0 0 1 0 32H22v16H14V8Zm8 10v12h11a6 6 0 0 0 0-12H22Z"/></svg>
-      <span class="wordmark">PIOT<span class="rr">RR</span></span>
+      <span class="wordmark" style="font-size:20px">PIOT<span class="rr">RR</span></span>
     </a>
     <nav class="nav-links" aria-label="Huvudmeny">
-      <a class="link" href="#hur">Så fungerar det</a>
-      <a class="link" href="#korridorer">Korridorer</a>
-      <a class="link" href="#verifiering">Vad vi verifierar</a>
-      <a class="link" href="#leverantorer">För leverantörer</a>
+      <a href="#hur">Så fungerar det</a><a href="#affaren">Affären</a><a href="#korridorer">Korridorer</a><a href="#yrken">Yrken</a>
     </nav>
     <div class="nav-right">
-      <button class="theme-toggle" id="themeBtn" aria-label="Växla tema" type="button">
-        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+      <button class="tgl" id="tgl" type="button" aria-label="Växla tema">
+        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>
         <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
       </button>
-      <a class="btn btn-primary" href="#begar">Begär arbete</a>
+      <a class="btn btn-primary" href="#begar"><svg class="ic"><use href="#s-forfragan"/></svg> Begär arbete</a>
     </div>
   </div></div>
 </header>
 
 <main id="top">
 
-<!-- hero -->
 <section class="hero">
   <div class="wrap"><div class="hero-grid">
     <div>
       <p class="eyebrow">Verifierad underentreprenad · EU</p>
       <h1>Europa,<br>redo att leverera.</h1>
-      <p class="lede">Piotrr är den verifierade marknadsplatsen för gränsöverskridande underentreprenad. Hitta arbetslag vars behörigheter är granskade mot originalhandlingar — inte självrapporterade.</p>
+      <p class="lede">Piotrr är den verifierade marknadsplatsen för gränsöverskridande underentreprenad. Ett symbolspråk följer varje steg — begripligt oavsett vilket språk du läser.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="#begar">Begär arbete</a>
-        <a class="btn btn-ghost" href="#verifiering">Se vad vi verifierar</a>
+        <a class="btn btn-primary" href="#begar"><svg class="ic"><use href="#s-forfragan"/></svg> Begär arbete</a>
+        <a class="btn btn-ghost" href="#verifiering"><svg class="ic"><use href="#s-visa"/></svg> Se vad vi verifierar</a>
       </div>
       <div class="assurance">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 4 6v6c0 4.6 3.2 7.9 8 9.5 4.8-1.6 8-4.9 8-9.5V6l-8-3.5Z" fill="var(--verified)"/><path d="m8.5 12 2.4 2.4L15.8 9.5" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Beställaransvaret är täckt — vi bär dokumentationen och revisionsspåret.</span>
+        <svg class="ic ic-24 is-ok"><use href="#s-forvar"/></svg>
+        <span>Beställaransvaret är täckt — dokumentation och revisionsspår i öppet förvar.</span>
       </div>
     </div>
 
-    <!-- the thesis: verification, made visible -->
     <div class="vpanel" id="vpanel" aria-label="Exempel på verifieringspanel">
       <div class="vpanel-head">
-        <div><div class="co">Vilnius Weldworks UAB</div><div class="org mono">Vilnius, LT · org 302••••94</div></div>
+        <svg class="ic ic-24 is-ok"><use href="#s-verifierad"/></svg>
+        <div style="flex:1"><div class="co">Vilnius Weldworks UAB</div><div class="org">Vilnius, LT · org 302••••94</div></div>
         <span class="eyebrow" style="color:var(--fg-faint)">LT → SE</span>
       </div>
       <ul class="vlist" id="vlist">
-        <li class="vitem"><svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="m7.5 12.2 3 3 6-6.4"/></svg><span class="lbl">F-skatt godkänd<small class="src">SKATTEVERKET</small></span><span class="scope">FÖRETAG</span></li>
-        <li class="vitem"><svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="m7.5 12.2 3 3 6-6.4"/></svg><span class="lbl">Momsregistrering<small class="src">VAT-STATUS</small></span><span class="scope">FÖRETAG</span></li>
-        <li class="vitem"><svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="m7.5 12.2 3 3 6-6.4"/></svg><span class="lbl">A1-intyg per utstationerad<small class="src">SODRA</small></span><span class="scope">ARBETARE</span></li>
-        <li class="vitem"><svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="m7.5 12.2 3 3 6-6.4"/></svg><span class="lbl">Anmälan om utstationering<small class="src">ARBETSMILJÖVERKET</small></span><span class="scope">UPPDRAG</span></li>
-        <li class="vitem"><svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="m7.5 12.2 3 3 6-6.4"/></svg><span class="lbl">ID06 per arbetare<small class="src">ID06</small></span><span class="scope">ARBETARE</span></li>
-        <li class="vitem"><svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="m7.5 12.2 3 3 6-6.4"/></svg><span class="lbl">Ansvarsförsäkring<small class="src">10 MSEK · T.O.M. 2026-12</small></span><span class="scope">FÖRETAG</span></li>
-        <li class="vitem"><svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="m7.5 12.2 3 3 6-6.4"/></svg><span class="lbl">Svetslicenser ISO 9606-1<small class="src">EN 1090 EXC2</small></span><span class="scope">ARBETARE</span></li>
+        <li class="vitem"><svg class="ic mk is-ok"><use href="#s-klart"/></svg><span class="lbl">F-skatt godkänd<small>SKATTEVERKET</small></span><span class="sc"><svg class="ic"><use href="#s-lagenhetshus"/></svg>Företag</span></li>
+        <li class="vitem"><svg class="ic mk is-ok"><use href="#s-klart"/></svg><span class="lbl">A1-intyg per utstationerad<small>SODRA</small></span><span class="sc"><svg class="ic"><use href="#s-arbetslag"/></svg>Arbetare</span></li>
+        <li class="vitem"><svg class="ic mk is-ok"><use href="#s-klart"/></svg><span class="lbl">Anmälan om utstationering<small>ARBETSMILJÖVERKET</small></span><span class="sc"><svg class="ic"><use href="#s-forfragan"/></svg>Uppdrag</span></li>
+        <li class="vitem"><svg class="ic mk is-ok"><use href="#s-klart"/></svg><span class="lbl">ID06 per arbetare<small>ID06</small></span><span class="sc"><svg class="ic"><use href="#s-arbetslag"/></svg>Arbetare</span></li>
+        <li class="vitem"><svg class="ic mk is-ok"><use href="#s-klart"/></svg><span class="lbl">Ansvarsförsäkring<small>10 MSEK · T.O.M. 2026-12</small></span><span class="sc"><svg class="ic"><use href="#s-lagenhetshus"/></svg>Företag</span></li>
+        <li class="vitem"><svg class="ic mk is-ok"><use href="#s-klart"/></svg><span class="lbl">Svetslicenser ISO 9606-1<small>EN 1090 EXC2</small></span><span class="sc"><svg class="ic"><use href="#s-arbetslag"/></svg>Arbetare</span></li>
       </ul>
-      <div class="vbadge" id="vbadge">
-        <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 4 6v6c0 4.6 3.2 7.9 8 9.5 4.8-1.6 8-4.9 8-9.5V6l-8-3.5Z" fill="var(--verified)"/><path d="m8.5 12 2.4 2.4L15.8 9.5" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Verifierad för arbete i Sverige</span>
-      </div>
+      <div class="vbadge" id="vbadge"><svg class="ic ic-24"><use href="#s-verifierad"/></svg><span>Verifierad för arbete i Sverige</span></div>
     </div>
   </div></div>
 </section>
@@ -288,98 +279,126 @@
 <!-- how it works -->
 <section id="hur">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Sekvensen är strategin</p>
-      <h2>Verifiera. Matcha. Leverera.</h2>
-      <p>Vår modell är concierge, inte självbetjäning. Ett riktigt team står bakom varje matchning — och verifieringen kommer alltid först.</p>
-    </div>
+    <div class="sec-head reveal"><p class="eyebrow"><svg class="ic is-accent"><use href="#s-nasta-steg"/></svg> Sekvensen är strategin</p><h2>Verifiera. Matcha. Leverera.</h2><p>Vår modell är concierge, inte självbetjäning. Ett riktigt team står bakom varje matchning — och verifieringen kommer alltid först.</p></div>
     <div class="steps">
-      <div class="step reveal"><div class="k">01 — VERIFIERA</div><h3>Granskad mot originalen</h3><p>Varje leverantör kontrolleras mot hemlandets och destinationslandets myndigheter. Binärt: verifierad för en korridor, eller inte. Aldrig till salu.</p></div>
-      <div class="step reveal"><div class="k">02 — MATCHA</div><h3>Rätt lag för uppdraget</h3><p>Beskriv arbetspaketet. Vårt ops-team kvalificerar förfrågan och skickar den endast till leverantörer som är verifierade för just din destination.</p></div>
-      <div class="step reveal"><div class="k">03 — LEVERERA</div><h3>Jämförbara offerter</h3><p>Varje offert visas med en verifieringsögonblicksbild fryst vid inlämning — kompetens, pris och startdatum, med revisionsspår hela vägen.</p></div>
+      <div class="step reveal"><div class="si"><svg class="ic ic-24"><use href="#s-verifierad"/></svg></div><div class="k">01 — VERIFIERA</div><h3>Granskad mot originalen</h3><p>Varje leverantör kontrolleras mot hemlandets och destinationslandets myndigheter. Binärt: verifierad för en korridor, eller inte. Aldrig till salu.</p></div>
+      <div class="step reveal"><div class="si"><svg class="ic ic-24"><use href="#s-arbetslag"/></svg></div><div class="k">02 — MATCHA</div><h3>Rätt lag för uppdraget</h3><p>Beskriv arbetspaketet. Vårt ops-team kvalificerar förfrågan och skickar den endast till leverantörer verifierade för just din destination.</p></div>
+      <div class="step reveal"><div class="si"><svg class="ic ic-24"><use href="#s-utbyte"/></svg></div><div class="k">03 — LEVERERA</div><h3>Öppet, jämförbart, tryggt</h3><p>Offerter visas med en verifieringsögonblicksbild fryst vid inlämning. Pengarna ligger i öppet förvar tills arbetet är godkänt.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- the deal as a picture story -->
+<section id="affaren" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal"><p class="eyebrow"><svg class="ic is-accent"><use href="#s-visa"/></svg> Hela affären som en bildberättelse</p><h2>Varje steg får en bild.</h2><p>Från förfrågan till sista betalningen — samma symbol betyder samma sak överallt. Den som inte läser svenska ska ändå förstå exakt var i affären hen är.</p></div>
+    <div class="story reveal">
+      <div class="story-track">
+        <div class="beat"><span class="n">01</span><div class="glyph"><svg class="ic"><use href="#s-forfragan"/></svg></div><div class="t">Köparen skapar ett jobb</div><div class="s">Beskriver arbetet, med foto på det som ska göras.</div></div>
+        <div class="beat"><span class="n">02</span><div class="glyph"><svg class="ic"><use href="#s-arbetslag"/></svg></div><div class="t">Verifierade svarar</div><div class="s">Endast leverantörer verifierade för destinationen.</div></div>
+        <div class="beat"><span class="n">03</span><div class="glyph"><svg class="ic"><use href="#s-pris"/></svg></div><div class="t">Pris och offert</div><div class="s">Jämförbara bud, från 620 kr/h.</div></div>
+        <div class="beat"><span class="n">04</span><div class="glyph"><svg class="ic"><use href="#s-avtal"/></svg></div><div class="t">Ni kommer överens</div><div class="s">Villkoren bekräftas — hashad, signerad.</div></div>
+        <div class="beat escrow"><span class="n">05</span><div class="glyph"><svg class="ic"><use href="#s-forvar"/></svg></div><div class="t">Pengarna i öppet förvar</div><div class="s">Låst, och båda ser samma bild.</div></div>
+        <div class="beat"><span class="n">06</span><div class="glyph"><svg class="ic"><use href="#s-pagar"/></svg></div><div class="t">Arbetet pågår</div><div class="s">Status som båda parter delar.</div></div>
+        <div class="beat"><span class="n">07</span><div class="glyph"><svg class="ic is-ok"><use href="#s-klart"/></svg></div><div class="t">Klart och godkänt</div><div class="s">Köparen kvitterar leveransen.</div></div>
+        <div class="beat escrow"><span class="n">08</span><div class="glyph"><svg class="ic"><use href="#s-utbyte"/></svg></div><div class="t">Pengarna släpps</div><div class="s">Till leverantören — synligt för alla.</div></div>
+      </div>
+      <div class="story-note"><svg class="ic"><use href="#s-visa"/></svg> Symbolerna är inte dekoration — de <em>är</em> gränssnittet. Texten bredvid är alltid valfri.</div>
+    </div>
+  </div>
+</section>
+
+<!-- status language -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head reveal"><p class="eyebrow">Ett statusspråk, i varje produkt</p><h2>Status är aldrig tvetydig.</h2><p>Samma symbol och samma ord betyder samma tillstånd överallt — symbol och text tillsammans, aldrig beroende av att någon vet vad en färg betyder.</p></div>
+    <div class="stat-grid reveal">
+      <div class="stat-chip"><svg class="ic g is-ok"><use href="#s-verifierad"/></svg><div><div class="n">Verifierad</div><div class="d">Granskad mot originalen</div></div></div>
+      <div class="stat-chip"><svg class="ic g is-wait"><use href="#s-vantar"/></svg><div><div class="n">Väntar</div><div class="d">Ligger i kö</div></div></div>
+      <div class="stat-chip"><svg class="ic g is-prog"><use href="#s-pagar"/></svg><div><div class="n">Pågår</div><div class="d">Arbete sker nu</div></div></div>
+      <div class="stat-chip"><svg class="ic g is-ok"><use href="#s-klart"/></svg><div><div class="n">Klart</div><div class="d">Genomfört och godkänt</div></div></div>
+      <div class="stat-chip"><svg class="ic g is-attn"><use href="#s-problem"/></svg><div><div class="n">Behöver din hjälp</div><div class="d">Väntar på dig</div></div></div>
+      <div class="stat-chip"><svg class="ic g is-wait"><use href="#s-stopp-vanta"/></svg><div><div class="n">Pausad</div><div class="d">Stoppad tills vidare</div></div></div>
     </div>
   </div>
 </section>
 
 <!-- corridors -->
-<section id="korridorer" class="band">
+<section id="korridorer" class="band" style="padding-top:0">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Destinationsmedveten verifiering</p>
-      <h2>Tolv korridorer, inte en.</h2>
-      <p>Verifierad för Sverige är inte verifierad för Tyskland. Varje korridor har sin egen kravkatalog med rätt hem- och destinationsinstitutioner — en leverantör kan aldrig skickas till en site den inte är verifierad för.</p>
-    </div>
+    <div class="sec-head reveal"><p class="eyebrow"><svg class="ic"><use href="#s-plats"/></svg> Destinationsmedveten verifiering</p><h2>Tolv korridorer, inte en.</h2><p>Verifierad för Sverige är inte verifierad för Tyskland. Varje korridor har sin egen kravkatalog — en leverantör kan aldrig skickas till en site den inte är verifierad för.</p></div>
     <div class="matrix reveal">
       <table>
-        <thead><tr><th scope="col">Ursprung ↓ / Destination →</th><th scope="col">Sverige</th><th scope="col">Tyskland</th><th scope="col">Danmark</th></tr></thead>
+        <thead><tr><th>Ursprung ↓ / Destination →</th><th>Sverige</th><th>Tyskland</th><th>Danmark</th></tr></thead>
         <tbody>
-          <tr><th scope="row">Litauen</th><td><span class="dot"><i></i>Aktiv</span></td><td><span class="dot"><i></i>Aktiv</span></td><td><span class="dot"><i></i>Aktiv</span></td></tr>
-          <tr><th scope="row">Polen</th><td><span class="dot"><i></i>Aktiv</span></td><td><span class="dot"><i></i>Aktiv</span></td><td><span class="dot"><i></i>Aktiv</span></td></tr>
-          <tr><th scope="row">Lettland</th><td><span class="dot"><i></i>Aktiv</span></td><td><span class="dot"><i></i>Aktiv</span></td><td><span class="dot"><i></i>Aktiv</span></td></tr>
-          <tr><th scope="row">Estland</th><td><span class="dot"><i></i>Aktiv</span></td><td><span class="dot"><i></i>Aktiv</span></td><td><span class="dot"><i></i>Aktiv</span></td></tr>
+          <tr><th>Litauen</th><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td></tr>
+          <tr><th>Polen</th><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td></tr>
+          <tr><th>Lettland</th><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td></tr>
+          <tr><th>Estland</th><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td><td><span class="dot"><svg class="ic is-ok"><use href="#s-klart"/></svg>Aktiv</span></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
 
-<!-- what we verify -->
-<section id="verifiering">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Tio krav, per korridor</p>
-      <h2>Vad ett badge faktiskt betyder.</h2>
-      <p>Panelen är produkten. Varje rad är en plattforms-verifierad handling — aldrig självrapporterad — och en lapsad kritisk handling släcker badgen automatiskt.</p>
-    </div>
-    <div class="reqs reveal">
-      <div class="req"><span class="rk">F-SKATT</span><span class="rt">F-skatt godkänd<small>Skatteverket · godkännandedatum</small></span><span class="rs">FÖRETAG</span></div>
-      <div class="req"><span class="rk">VAT</span><span class="rt">Momsregistrering<small>Registreringsstatus</small></span><span class="rs">FÖRETAG</span></div>
-      <div class="req"><span class="rk">REG</span><span class="rt">Företagsregisterutdrag<small>Registrų centras m.fl.</small></span><span class="rs">FÖRETAG</span></div>
-      <div class="req"><span class="rk">A1</span><span class="rt">A1-intyg per utstationerad<small>Sodra · giltighetsdatum</small></span><span class="rs">ARBETARE</span></div>
-      <div class="req"><span class="rk">UTST</span><span class="rt">Anmälan om utstationering<small>Arbetsmiljöverket · per uppdrag</small></span><span class="rs">UPPDRAG</span></div>
-      <div class="req"><span class="rk">ID06</span><span class="rt">ID06-status per arbetare<small>Aktiva kort</small></span><span class="rs">ARBETARE</span></div>
-      <div class="req"><span class="rk">FÖRS</span><span class="rt">Ansvarsförsäkring<small>Försäkringsgivare · belopp · utgång</small></span><span class="rs">FÖRETAG</span></div>
-      <div class="req"><span class="rk">KOLL</span><span class="rt">Kollektivavtalsstatus<small>Medlem / hängavtal / inget</small></span><span class="rs">FÖRETAG</span></div>
-      <div class="req"><span class="rk">CERT</span><span class="rt">Yrkeslicenser<small>ISO 9606-1 · EN 1090 EXC-klass</small></span><span class="rs">ARBETARE</span></div>
-      <div class="req"><span class="rk">REF</span><span class="rt">Referensprojekt<small>Minst två, kontaktbara</small></span><span class="rs">FÖRETAG</span></div>
-    </div>
-  </div>
-</section>
-
 <!-- trades -->
-<section style="padding-top:0">
+<section id="yrken">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Tretton yrken</p>
-      <h2>Bygg och fastighet, verifierat.</h2>
-    </div>
+    <div class="sec-head reveal"><p class="eyebrow"><svg class="ic is-accent"><use href="#s-arbetslag"/></svg> Tretton yrken, ett språk</p><h2>Bygg och fastighet, verifierat.</h2></div>
     <div class="trades reveal">
-      <span class="trade">Svetsning</span><span class="trade">Industrimontage</span><span class="trade">Snickeri</span>
-      <span class="trade">Betong</span><span class="trade">Rivning</span><span class="trade">El</span>
-      <span class="trade">VVS</span><span class="trade">Tak</span><span class="trade">Stål</span>
-      <span class="trade">Markarbeten</span><span class="trade">Målning</span><span class="trade">Plattsättning</span>
-      <span class="trade">Fastighetsservice</span>
+      <div class="trade"><svg class="ic"><use href="#s-svetsare"/></svg><span>Svetsning</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-skiftnyckel"/></svg><span>Industrimontage</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-snickare"/></svg><span>Snickeri</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-betong"/></svg><span>Betong</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-slagga"/></svg><span>Rivning</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-elektriker"/></svg><span>El</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-rormokare"/></svg><span>VVS</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-taklaggare"/></svg><span>Tak</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-kran"/></svg><span>Stål</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-markarbete"/></svg><span>Markarbeten</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-malare"/></svg><span>Målning</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-plattsattare"/></svg><span>Plattsättning</span></div>
+      <div class="trade"><svg class="ic"><use href="#s-ventilation"/></svg><span>Fastighetsservice</span></div>
     </div>
   </div>
 </section>
 
-<!-- assurance + CTA -->
-<section id="begar">
+<!-- what we verify -->
+<section id="verifiering" style="padding-top:0">
   <div class="wrap">
-    <div class="assure-card reveal">
+    <div class="sec-head reveal"><p class="eyebrow"><svg class="ic is-accent"><use href="#s-checklista"/></svg> Tio krav, per korridor</p><h2>Vad ett badge faktiskt betyder.</h2><p>Panelen är produkten. Varje rad är en plattforms-verifierad handling — aldrig självrapporterad — och en lapsad kritisk handling släcker badgen automatiskt.</p></div>
+    <div class="reqs reveal">
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">F-skatt godkänd<small>Skatteverket · godkännandedatum</small></span><span class="rs">FÖRETAG</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">Momsregistrering<small>Registreringsstatus</small></span><span class="rs">FÖRETAG</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">Företagsregisterutdrag<small>Registrų centras m.fl.</small></span><span class="rs">FÖRETAG</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">A1-intyg per utstationerad<small>Sodra · giltighetsdatum</small></span><span class="rs">ARBETARE</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">Anmälan om utstationering<small>Arbetsmiljöverket · per uppdrag</small></span><span class="rs">UPPDRAG</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">ID06-status per arbetare<small>Aktiva kort</small></span><span class="rs">ARBETARE</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">Ansvarsförsäkring<small>Försäkringsgivare · belopp · utgång</small></span><span class="rs">FÖRETAG</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">Kollektivavtalsstatus<small>Medlem / hängavtal / inget</small></span><span class="rs">FÖRETAG</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">Yrkeslicenser<small>ISO 9606-1 · EN 1090 EXC-klass</small></span><span class="rs">ARBETARE</span></div>
+      <div class="req"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="rt">Referensprojekt<small>Minst två, kontaktbara</small></span><span class="rs">FÖRETAG</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- assurance + cta -->
+<section id="begar" style="padding-top:0">
+  <div class="wrap">
+    <div class="assure reveal">
       <div>
-        <p class="eyebrow">För köpare</p>
+        <p class="eyebrow"><svg class="ic is-accent"><use href="#s-kopare"/></svg> För köpare</p>
         <h2>Lägg ut arbetspaketet. Låt risken försvinna.</h2>
-        <p>Du beskriver jobbet; vi bär F-skatt, A1, utstationering, ID06 och försäkring — dokumenterat och granskbart. Ingen bemanning, inga självrapporterade meriter, ingen gissning.</p>
+        <p>Du beskriver jobbet; vi bär F-skatt, A1, utstationering, ID06 och försäkring — dokumenterat och granskbart. Pengarna i öppet förvar tills du godkänner.</p>
         <div class="stat-row">
           <div class="stat"><div class="v num">12</div><div class="l">Korridorer</div></div>
           <div class="stat"><div class="v num">13</div><div class="l">Yrken</div></div>
-          <div class="stat"><div class="v num">10</div><div class="l">Krav / badge</div></div>
+          <div class="stat"><div class="v num">110</div><div class="l">Symboler</div></div>
         </div>
       </div>
-      <div class="cta-final">
-        <a class="btn btn-primary" href="mailto:hej@piotrr.example?subject=Beg%C3%A4r%20arbete%20via%20Piotrr">Begär arbete</a>
-        <p class="cta-note">Konto skapas automatiskt på din e-post. Verifieras med länk.</p>
+      <div>
+        <a class="btn btn-primary" style="font-size:16px;padding:14px 26px" href="mailto:hej@piotrr.example?subject=Beg%C3%A4r%20arbete%20via%20Piotrr"><svg class="ic"><use href="#s-forfragan"/></svg> Begär arbete <svg class="ic"><use href="#s-framat"/></svg></a>
+        <p class="cta-note"><svg class="ic"><use href="#s-last"/></svg> Konto skapas automatiskt på din e-post. Verifieras med länk.</p>
       </div>
     </div>
   </div>
@@ -387,86 +406,44 @@
 
 </main>
 
-<footer id="leverantorer">
+<footer>
   <div class="wrap">
     <div class="foot-top">
-      <div>
-        <span class="wordmark" style="font-size:22px">PIOT<span class="rr">RR</span></span>
-        <p class="foot-tag">Den verifierade bryggan mellan marknader. Verifiera → matcha → transaktera → expandera.</p>
-      </div>
+      <div><span class="wordmark" style="font-size:22px">PIOT<span class="rr">RR</span></span><p class="foot-tag">Den verifierade bryggan mellan marknader. Verifiera → matcha → transaktera → expandera.</p></div>
       <div class="foot-cols">
-        <div class="foot-col">
-          <h4>Produkt</h4>
-          <a href="#hur">Så fungerar det</a>
-          <a href="#korridorer">Korridorer</a>
-          <a href="#verifiering">Vad vi verifierar</a>
-        </div>
-        <div class="foot-col">
-          <h4>Leverantörer</h4>
-          <a href="#begar">Anslut ditt företag</a>
-          <a href="#verifiering">Bli verifierad</a>
-        </div>
-        <div class="foot-col">
-          <h4>Marknader</h4>
-          <a href="#korridorer">Sverige</a>
-          <a href="#korridorer">Tyskland</a>
-          <a href="#korridorer">Danmark</a>
-        </div>
+        <div class="foot-col"><h4>Produkt</h4><a href="#hur">Så fungerar det</a><a href="#affaren">Affären steg för steg</a><a href="#verifiering">Vad vi verifierar</a></div>
+        <div class="foot-col"><h4>Leverantörer</h4><a href="#begar">Anslut ditt företag</a><a href="#yrken">Yrken</a></div>
+        <div class="foot-col"><h4>Marknader</h4><a href="#korridorer">Sverige</a><a href="#korridorer">Tyskland</a><a href="#korridorer">Danmark</a></div>
       </div>
     </div>
     <div class="foot-bottom">
       <span>© <span class="num">2026</span> Piotrr — Europa, redo att leverera.</span>
-      <span class="locales">SV · EN · LT · LV · ET · PL · DE · DA</span>
+      <span class="locales"><svg class="ic"><use href="#s-sprak"/></svg> SV · EN · LT · LV · ET · PL · DE · DA</span>
     </div>
   </div>
 </footer>
 
 <script>
-  (function () {
-    // theme toggle (persists per viewer; falls back gracefully)
-    var btn = document.getElementById('themeBtn');
-    var root = document.documentElement;
-    try {
-      var saved = localStorage.getItem('piotrr-theme');
-      if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
-    } catch (e) {}
-    btn && btn.addEventListener('click', function () {
-      var cur = root.getAttribute('data-theme');
-      var isDark = cur ? cur === 'dark'
-        : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      var next = isDark ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('piotrr-theme', next); } catch (e) {}
-    });
-
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // hero: verify the panel, one item at a time, then the badge
-    var items = Array.prototype.slice.call(document.querySelectorAll('#vlist .vitem'));
-    var badge = document.getElementById('vbadge');
-    function verifyPanel() {
-      if (reduce) { items.forEach(function (el) { el.classList.add('done'); }); badge.classList.add('on'); return; }
-      items.forEach(function (el, i) { setTimeout(function () { el.classList.add('done'); }, 320 + i * 260); });
-      setTimeout(function () { badge.classList.add('on'); }, 320 + items.length * 260 + 220);
-    }
-    // run when the panel is on screen (it is, at load, but guard anyway)
-    if ('IntersectionObserver' in window) {
-      var po = new IntersectionObserver(function (es) {
-        es.forEach(function (e) { if (e.isIntersecting) { verifyPanel(); po.disconnect(); } });
-      }, { threshold: 0.3 });
-      po.observe(document.getElementById('vpanel'));
-    } else { verifyPanel(); }
-
-    // scroll reveals
-    var reveals = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
-    if (reduce || !('IntersectionObserver' in window)) { reveals.forEach(function (el) { el.classList.add('in'); }); }
-    else {
-      var ro = new IntersectionObserver(function (es) {
-        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
-      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-      reveals.forEach(function (el) { ro.observe(el); });
-    }
-  })();
+(function(){
+  var root=document.documentElement, tgl=document.getElementById('tgl');
+  try{var s=localStorage.getItem('piotrr-theme'); if(s==='dark'||s==='light')root.setAttribute('data-theme',s);}catch(e){}
+  tgl&&tgl.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var dark=cur?cur==='dark':(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+    var next=dark?'light':'dark'; root.setAttribute('data-theme',next);
+    try{localStorage.setItem('piotrr-theme',next);}catch(e){}
+  });
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var items=[].slice.call(document.querySelectorAll('#vlist .vitem')), badge=document.getElementById('vbadge');
+  function run(){ if(reduce){items.forEach(function(el){el.classList.add('done');});badge.classList.add('on');return;}
+    items.forEach(function(el,i){setTimeout(function(){el.classList.add('done');},300+i*250);});
+    setTimeout(function(){badge.classList.add('on');},300+items.length*250+200);
+  }
+  if('IntersectionObserver'in window){var po=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){run();po.disconnect();}});},{threshold:.3});po.observe(document.getElementById('vpanel'));}else run();
+  var rev=[].slice.call(document.querySelectorAll('.reveal'));
+  if(reduce||!('IntersectionObserver'in window))rev.forEach(function(el){el.classList.add('in');});
+  else{var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -8% 0px'});rev.forEach(function(el){ro.observe(el);});}
+})();
 </script>
 </body>
 </html>
