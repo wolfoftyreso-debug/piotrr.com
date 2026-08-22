@@ -1,0 +1,662 @@
+[
+  {
+    "name": "Byggare",
+    "slug": "byggare",
+    "category": "Människor & yrken",
+    "file": "byggare.svg"
+  },
+  {
+    "name": "Svetsare",
+    "slug": "svetsare",
+    "category": "Människor & yrken",
+    "file": "svetsare.svg"
+  },
+  {
+    "name": "Elektriker",
+    "slug": "elektriker",
+    "category": "Människor & yrken",
+    "file": "elektriker.svg"
+  },
+  {
+    "name": "Snickare",
+    "slug": "snickare",
+    "category": "Människor & yrken",
+    "file": "snickare.svg"
+  },
+  {
+    "name": "Målare",
+    "slug": "malare",
+    "category": "Människor & yrken",
+    "file": "malare.svg"
+  },
+  {
+    "name": "Murare",
+    "slug": "murare",
+    "category": "Människor & yrken",
+    "file": "murare.svg"
+  },
+  {
+    "name": "Rörmokare",
+    "slug": "rormokare",
+    "category": "Människor & yrken",
+    "file": "rormokare.svg"
+  },
+  {
+    "name": "Takläggare",
+    "slug": "taklaggare",
+    "category": "Människor & yrken",
+    "file": "taklaggare.svg"
+  },
+  {
+    "name": "Golvläggare",
+    "slug": "golvlaggare",
+    "category": "Människor & yrken",
+    "file": "golvlaggare.svg"
+  },
+  {
+    "name": "Städ",
+    "slug": "stad",
+    "category": "Människor & yrken",
+    "file": "stad.svg"
+  },
+  {
+    "name": "Ställning",
+    "slug": "stallning",
+    "category": "Människor & yrken",
+    "file": "stallning.svg"
+  },
+  {
+    "name": "Såg",
+    "slug": "sag",
+    "category": "Verktyg",
+    "file": "sag.svg"
+  },
+  {
+    "name": "Borr",
+    "slug": "borr",
+    "category": "Verktyg",
+    "file": "borr.svg"
+  },
+  {
+    "name": "Spade",
+    "slug": "spade",
+    "category": "Verktyg",
+    "file": "spade.svg"
+  },
+  {
+    "name": "Skruvmejsel",
+    "slug": "skruvmejsel",
+    "category": "Verktyg",
+    "file": "skruvmejsel.svg"
+  },
+  {
+    "name": "Skiftnyckel",
+    "slug": "skiftnyckel",
+    "category": "Verktyg",
+    "file": "skiftnyckel.svg"
+  },
+  {
+    "name": "Måttband",
+    "slug": "mattband",
+    "category": "Verktyg",
+    "file": "mattband.svg"
+  },
+  {
+    "name": "Vattenpass",
+    "slug": "vattenpass",
+    "category": "Verktyg",
+    "file": "vattenpass.svg"
+  },
+  {
+    "name": "Stege",
+    "slug": "stege",
+    "category": "Verktyg",
+    "file": "stege.svg"
+  },
+  {
+    "name": "Skottkärra",
+    "slug": "skottkarra",
+    "category": "Verktyg",
+    "file": "skottkarra.svg"
+  },
+  {
+    "name": "Hink",
+    "slug": "hink",
+    "category": "Verktyg",
+    "file": "hink.svg"
+  },
+  {
+    "name": "Hjälm",
+    "slug": "hjalm",
+    "category": "Skydd",
+    "file": "hjalm.svg"
+  },
+  {
+    "name": "Handskar",
+    "slug": "handskar",
+    "category": "Skydd",
+    "file": "handskar.svg"
+  },
+  {
+    "name": "Glasögon",
+    "slug": "glasogon",
+    "category": "Skydd",
+    "file": "glasogon.svg"
+  },
+  {
+    "name": "Hörselskydd",
+    "slug": "horselskydd",
+    "category": "Skydd",
+    "file": "horselskydd.svg"
+  },
+  {
+    "name": "Väst",
+    "slug": "vast",
+    "category": "Skydd",
+    "file": "vast.svg"
+  },
+  {
+    "name": "Skor",
+    "slug": "skor",
+    "category": "Skydd",
+    "file": "skor.svg"
+  },
+  {
+    "name": "Grävmaskin",
+    "slug": "gravmaskin",
+    "category": "Maskiner",
+    "file": "gravmaskin.svg"
+  },
+  {
+    "name": "Kran",
+    "slug": "kran",
+    "category": "Maskiner",
+    "file": "kran.svg"
+  },
+  {
+    "name": "Truck",
+    "slug": "truck",
+    "category": "Maskiner",
+    "file": "truck.svg"
+  },
+  {
+    "name": "Lastbil",
+    "slug": "lastbil",
+    "category": "Maskiner",
+    "file": "lastbil.svg"
+  },
+  {
+    "name": "Betong",
+    "slug": "betong",
+    "category": "Maskiner",
+    "file": "betong.svg"
+  },
+  {
+    "name": "Saxlift",
+    "slug": "saxlift",
+    "category": "Maskiner",
+    "file": "saxlift.svg"
+  },
+  {
+    "name": "Förfrågan",
+    "slug": "forfragan",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "forfragan.svg"
+  },
+  {
+    "name": "Pris",
+    "slug": "pris",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "pris.svg"
+  },
+  {
+    "name": "Sedel",
+    "slug": "sedel",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "sedel.svg"
+  },
+  {
+    "name": "Utbyte",
+    "slug": "utbyte",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "utbyte.svg"
+  },
+  {
+    "name": "Avtal",
+    "slug": "avtal",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "avtal.svg"
+  },
+  {
+    "name": "Förvar",
+    "slug": "forvar",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "forvar.svg"
+  },
+  {
+    "name": "Delbetalning",
+    "slug": "delbetalning",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "delbetalning.svg"
+  },
+  {
+    "name": "Faktura",
+    "slug": "faktura",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "faktura.svg"
+  },
+  {
+    "name": "Kvitto",
+    "slug": "kvitto",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "kvitto.svg"
+  },
+  {
+    "name": "Kalender",
+    "slug": "kalender",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "kalender.svg"
+  },
+  {
+    "name": "Tid",
+    "slug": "tid",
+    "category": "Pengar & avtal — öppna sedelutbyten",
+    "file": "tid.svg"
+  },
+  {
+    "name": "Verifierad",
+    "slug": "verifierad",
+    "category": "Status & samtal",
+    "file": "verifierad.svg"
+  },
+  {
+    "name": "Väntar",
+    "slug": "vantar",
+    "category": "Status & samtal",
+    "file": "vantar.svg"
+  },
+  {
+    "name": "Pågår",
+    "slug": "pagar",
+    "category": "Status & samtal",
+    "file": "pagar.svg"
+  },
+  {
+    "name": "Klart",
+    "slug": "klart",
+    "category": "Status & samtal",
+    "file": "klart.svg"
+  },
+  {
+    "name": "Problem",
+    "slug": "problem",
+    "category": "Status & samtal",
+    "file": "problem.svg"
+  },
+  {
+    "name": "Fråga",
+    "slug": "fraga",
+    "category": "Status & samtal",
+    "file": "fraga.svg"
+  },
+  {
+    "name": "Stopp / vänta",
+    "slug": "stopp-vanta",
+    "category": "Status & samtal",
+    "file": "stopp-vanta.svg"
+  },
+  {
+    "name": "Meddelande",
+    "slug": "meddelande",
+    "category": "Status & samtal",
+    "file": "meddelande.svg"
+  },
+  {
+    "name": "Ring",
+    "slug": "ring",
+    "category": "Status & samtal",
+    "file": "ring.svg"
+  },
+  {
+    "name": "Foto / bevis",
+    "slug": "foto-bevis",
+    "category": "Status & samtal",
+    "file": "foto-bevis.svg"
+  },
+  {
+    "name": "Ladda upp",
+    "slug": "ladda-upp",
+    "category": "Status & samtal",
+    "file": "ladda-upp.svg"
+  },
+  {
+    "name": "Plats",
+    "slug": "plats",
+    "category": "Status & samtal",
+    "file": "plats.svg"
+  },
+  {
+    "name": "Betyg",
+    "slug": "betyg",
+    "category": "Status & samtal",
+    "file": "betyg.svg"
+  },
+  {
+    "name": "Språk",
+    "slug": "sprak",
+    "category": "Status & samtal",
+    "file": "sprak.svg"
+  },
+  {
+    "name": "Hjälp",
+    "slug": "hjalp",
+    "category": "Status & samtal",
+    "file": "hjalp.svg"
+  },
+  {
+    "name": "Köpare",
+    "slug": "kopare",
+    "category": "Status & samtal",
+    "file": "kopare.svg"
+  },
+  {
+    "name": "Arbetslag",
+    "slug": "arbetslag",
+    "category": "Status & samtal",
+    "file": "arbetslag.svg"
+  },
+  {
+    "name": "Minigrävare",
+    "slug": "minigravare",
+    "category": "Maskiner & fordon II",
+    "file": "minigravare.svg"
+  },
+  {
+    "name": "Traktor",
+    "slug": "traktor",
+    "category": "Maskiner & fordon II",
+    "file": "traktor.svg"
+  },
+  {
+    "name": "Hjullastare",
+    "slug": "hjullastare",
+    "category": "Maskiner & fordon II",
+    "file": "hjullastare.svg"
+  },
+  {
+    "name": "Flakbil",
+    "slug": "flakbil",
+    "category": "Maskiner & fordon II",
+    "file": "flakbil.svg"
+  },
+  {
+    "name": "Skåpbil",
+    "slug": "skapbil",
+    "category": "Maskiner & fordon II",
+    "file": "skapbil.svg"
+  },
+  {
+    "name": "Kranbil",
+    "slug": "kranbil",
+    "category": "Maskiner & fordon II",
+    "file": "kranbil.svg"
+  },
+  {
+    "name": "Släp",
+    "slug": "slap",
+    "category": "Maskiner & fordon II",
+    "file": "slap.svg"
+  },
+  {
+    "name": "Villa",
+    "slug": "villa",
+    "category": "Hus & byggnader",
+    "file": "villa.svg"
+  },
+  {
+    "name": "Parhus",
+    "slug": "parhus",
+    "category": "Hus & byggnader",
+    "file": "parhus.svg"
+  },
+  {
+    "name": "Lägenhetshus",
+    "slug": "lagenhetshus",
+    "category": "Hus & byggnader",
+    "file": "lagenhetshus.svg"
+  },
+  {
+    "name": "Stuga / attefall",
+    "slug": "stuga-attefall",
+    "category": "Hus & byggnader",
+    "file": "stuga-attefall.svg"
+  },
+  {
+    "name": "Garage",
+    "slug": "garage",
+    "category": "Hus & byggnader",
+    "file": "garage.svg"
+  },
+  {
+    "name": "Stomme / bygge",
+    "slug": "stomme-bygge",
+    "category": "Hus & byggnader",
+    "file": "stomme-bygge.svg"
+  },
+  {
+    "name": "Slägga",
+    "slug": "slagga",
+    "category": "Redskap & material II",
+    "file": "slagga.svg"
+  },
+  {
+    "name": "Murslev",
+    "slug": "murslev",
+    "category": "Redskap & material II",
+    "file": "murslev.svg"
+  },
+  {
+    "name": "Virke",
+    "slug": "virke",
+    "category": "Redskap & material II",
+    "file": "virke.svg"
+  },
+  {
+    "name": "Tegel",
+    "slug": "tegel",
+    "category": "Redskap & material II",
+    "file": "tegel.svg"
+  },
+  {
+    "name": "Betongsäck",
+    "slug": "betongsack",
+    "category": "Redskap & material II",
+    "file": "betongsack.svg"
+  },
+  {
+    "name": "El & kabel",
+    "slug": "el-o-kabel",
+    "category": "Redskap & material II",
+    "file": "el-o-kabel.svg"
+  },
+  {
+    "name": "Skruv",
+    "slug": "skruv",
+    "category": "Redskap & material II",
+    "file": "skruv.svg"
+  },
+  {
+    "name": "Spik",
+    "slug": "spik",
+    "category": "Redskap & material II",
+    "file": "spik.svg"
+  },
+  {
+    "name": "Färgburk",
+    "slug": "fargburk",
+    "category": "Redskap & material II",
+    "file": "fargburk.svg"
+  },
+  {
+    "name": "Glas",
+    "slug": "glas",
+    "category": "Redskap & material II",
+    "file": "glas.svg"
+  },
+  {
+    "name": "Kyla & värme",
+    "slug": "kyla-o-varme",
+    "category": "Fler yrken",
+    "file": "kyla-o-varme.svg"
+  },
+  {
+    "name": "Plattsättare",
+    "slug": "plattsattare",
+    "category": "Fler yrken",
+    "file": "plattsattare.svg"
+  },
+  {
+    "name": "Glasmästare",
+    "slug": "glasmastare",
+    "category": "Fler yrken",
+    "file": "glasmastare.svg"
+  },
+  {
+    "name": "Markarbete",
+    "slug": "markarbete",
+    "category": "Fler yrken",
+    "file": "markarbete.svg"
+  },
+  {
+    "name": "Ventilation",
+    "slug": "ventilation",
+    "category": "Fler yrken",
+    "file": "ventilation.svg"
+  },
+  {
+    "name": "Trädgård",
+    "slug": "tradgard",
+    "category": "Fler yrken",
+    "file": "tradgard.svg"
+  },
+  {
+    "name": "Framåt",
+    "slug": "framat",
+    "category": "Pilar & riktning",
+    "file": "framat.svg"
+  },
+  {
+    "name": "Tillbaka",
+    "slug": "tillbaka",
+    "category": "Pilar & riktning",
+    "file": "tillbaka.svg"
+  },
+  {
+    "name": "Upp",
+    "slug": "upp",
+    "category": "Pilar & riktning",
+    "file": "upp.svg"
+  },
+  {
+    "name": "Ner",
+    "slug": "ner",
+    "category": "Pilar & riktning",
+    "file": "ner.svg"
+  },
+  {
+    "name": "Byt plats",
+    "slug": "byt-plats",
+    "category": "Pilar & riktning",
+    "file": "byt-plats.svg"
+  },
+  {
+    "name": "Ångra",
+    "slug": "angra",
+    "category": "Pilar & riktning",
+    "file": "angra.svg"
+  },
+  {
+    "name": "Öppna stort",
+    "slug": "oppna-stort",
+    "category": "Pilar & riktning",
+    "file": "oppna-stort.svg"
+  },
+  {
+    "name": "Välj",
+    "slug": "valj",
+    "category": "Pilar & riktning",
+    "file": "valj.svg"
+  },
+  {
+    "name": "Nästa steg",
+    "slug": "nasta-steg",
+    "category": "Pilar & riktning",
+    "file": "nasta-steg.svg"
+  },
+  {
+    "name": "Mål",
+    "slug": "mal",
+    "category": "Pilar & riktning",
+    "file": "mal.svg"
+  },
+  {
+    "name": "Lägg till",
+    "slug": "lagg-till",
+    "category": "Handlingar",
+    "file": "lagg-till.svg"
+  },
+  {
+    "name": "Stäng",
+    "slug": "stang",
+    "category": "Handlingar",
+    "file": "stang.svg"
+  },
+  {
+    "name": "Sök",
+    "slug": "sok",
+    "category": "Handlingar",
+    "file": "sok.svg"
+  },
+  {
+    "name": "Skriv / ändra",
+    "slug": "skriv-andra",
+    "category": "Handlingar",
+    "file": "skriv-andra.svg"
+  },
+  {
+    "name": "Släng",
+    "slug": "slang",
+    "category": "Handlingar",
+    "file": "slang.svg"
+  },
+  {
+    "name": "Skicka",
+    "slug": "skicka",
+    "category": "Handlingar",
+    "file": "skicka.svg"
+  },
+  {
+    "name": "Ladda ner",
+    "slug": "ladda-ner",
+    "category": "Handlingar",
+    "file": "ladda-ner.svg"
+  },
+  {
+    "name": "Checklista",
+    "slug": "checklista",
+    "category": "Handlingar",
+    "file": "checklista.svg"
+  },
+  {
+    "name": "Låst",
+    "slug": "last",
+    "category": "Handlingar",
+    "file": "last.svg"
+  },
+  {
+    "name": "Visa",
+    "slug": "visa",
+    "category": "Handlingar",
+    "file": "visa.svg"
+  }
+]
