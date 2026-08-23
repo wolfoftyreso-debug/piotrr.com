@@ -1,0 +1,172 @@
+# The one deployable (Section 3) — same container image as compose/ECS.
+# replicas: 1 by stage discipline; pg-boss uses Postgres advisory locks, so
+# scaling out later is safe without an external scheduler.
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: baltic-bridge
+spec:
+  selector:
+    app: app
+  ports:
+    - port: 3000
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: baltic-bridge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      # The image already runs as an unprivileged user (Dockerfile: USER
+      # app). Saying so here means the cluster enforces it rather than
+      # trusting the image: a rebuild that drops the USER line, or a
+      # wrong image tag, fails to start instead of running as root.
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: app
+      automountServiceAccountToken: false
+      # SIGTERM starts a drain: readiness flips, the pod is pulled from
+      # the Service, then running jobs finish. This must be longer than
+      # SHUTDOWN_DRAIN_DELAY_MS plus the longest job we are willing to
+      # wait for, or SIGKILL lands mid-drain and we are back to losing
+      # work on every deploy.
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: app
+          image: baltic-bridge:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          # readOnlyRootFilesystem needs the two paths Next actually
+          # writes to mounted as scratch. Both are per-pod and disposable
+          # — nothing durable belongs in the container.
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: next-cache
+              mountPath: /app/.next/cache
+            # The CA that signed the database's certificate.
+            # DATABASE_URL must point sslrootcert= at this path; the app
+            # refuses to start in production otherwise. Only ca.crt is
+            # projected — the server's private key has no business in the
+            # application pod.
+            - name: pg-ca
+              mountPath: /etc/pg-tls
+              readOnly: true
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: baltic-bridge-env
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: ENABLE_JOBS
+              value: "1"
+            - name: MALWARE_SCANNER
+              value: clamav
+            - name: CLAMAV_HOST
+              value: clamav
+            - name: CLAMAV_PORT
+              value: "3310"
+            # How many proxies append to X-Forwarded-For before the app
+            # sees it. Rate limiting counts from the right-hand end of
+            # that header, so this number is what stops a client
+            # inventing a fresh address per request. Traefik does not
+            # trust an inbound X-Forwarded-For from an untrusted client
+            # and writes its own, so the default chain is one hop. Raise
+            # it by one for every additional trusted proxy you put in
+            # front (a load balancer, a CDN) — and never lower it to
+            # zero.
+            - name: TRUSTED_PROXY_HOPS
+              value: "1"
+            # Without this Next handles SIGTERM itself and exits before
+            # the drain finishes. Set in the image too; repeated here so
+            # the manifest is honest about what the grace period buys.
+            - name: NEXT_MANUAL_SIG_HANDLE
+              value: "true"
+            # Keep serving this long after readiness flips, so kube-proxy
+            # on every node has removed the pod from the Service.
+            - name: SHUTDOWN_DRAIN_DELAY_MS
+              value: "5000"
+          # Startup, readiness and liveness are three different
+          # questions and used to be answered by one endpoint that
+          # checked the database. A database blip therefore failed
+          # *liveness* on every replica at once and the kubelet restarted
+          # them all — turning a dependency outage into a crash loop that
+          # could not fix the dependency.
+          #
+          #   startup   — has it booted yet? (generous, no dependencies)
+          #   liveness  — is the process wedged? (no dependencies)
+          #   readiness — can it serve? (database, and drain state)
+          startupProbe:
+            httpGet:
+              path: /api/healthz
+              port: 3000
+            periodSeconds: 3
+            failureThreshold: 30 # up to 90s to boot before giving up
+          readinessProbe:
+            httpGet:
+              path: /api/readyz
+              port: 3000
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/healthz
+              port: 3000
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            # A limit as well as a request: one runaway request must not
+            # be able to starve Postgres and MinIO on the same node.
+            limits:
+              cpu: "2"
+              memory: 2Gi
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: next-cache
+          emptyDir: {}
+        - name: pg-ca
+          secret:
+            secretName: pg-tls
+            items:
+              - key: ca.crt
+                path: ca.crt
+---
+# A voluntary disruption (node drain, cluster upgrade) must not take the
+# only replica down without warning. At replicas: 1 this makes the drain
+# block until a human or the rollout provides a replacement, rather than
+# silently causing an outage during routine maintenance.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: app
+  namespace: baltic-bridge
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: app

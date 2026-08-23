@@ -1,0 +1,147 @@
+# Self-owned single-node production stack — no managed AWS services.
+# App + self-managed Postgres 16 + MinIO (S3 API) + one-shot migration runner.
+# See docs/SELF-HOSTED.md for the full runbook (backups, TLS, mail relay).
+#
+# Usage:
+#   cp .env.selfhost.example .env.selfhost   # fill in real secrets (never commit)
+#   docker compose -f docker-compose.selfhost.yml --env-file .env.selfhost up -d --build
+#
+# Put your own reverse proxy (nginx/Caddy/ALB) in front of :3000 for TLS.
+# MinIO's :9000 must also be reachable by browsers (presigned URLs) — proxy it
+# under e.g. https://files.<domain> and set S3_ENDPOINT to that public URL.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set in .env.selfhost}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in .env.selfhost}
+      POSTGRES_DB: ${POSTGRES_DB:-baltic_bridge}
+    ports:
+      - "127.0.0.1:5432:5432" # host-local only, for admin/pg_dump access
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set in .env.selfhost}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set in .env.selfhost}
+    ports:
+      - "127.0.0.1:9000:9000" # expose publicly only via your reverse proxy
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_started
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      mc alias set local http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD};
+      mc mb --ignore-existing local/$${S3_DOCUMENTS_BUCKET:-documents};
+      mc version enable local/$${S3_DOCUMENTS_BUCKET:-documents};
+      exit 0"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      S3_DOCUMENTS_BUCKET: ${S3_DOCUMENTS_BUCKET:-documents}
+
+  # Malware scanning for the documents bucket (Section 4.7). GuardDuty
+  # Malware Protection for S3 does not exist in MinIO mode, so we run the
+  # scanner ourselves. First start downloads the signature database and
+  # takes a few minutes; the app queues scans and retries meanwhile.
+  clamav:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    volumes:
+      - clamdb:/var/lib/clamav
+    healthcheck:
+      test: ["CMD-SHELL", "clamdscan --ping 1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 300s
+
+  # One-shot: applies append-only Drizzle migrations, then exits.
+  migrate:
+    build:
+      context: .
+      target: build
+    command: ["npm", "run", "db:migrate"]
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-baltic_bridge}
+
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio:
+        condition: service_started
+    ports:
+      - "127.0.0.1:3000:3000" # front with nginx/Caddy/ALB for TLS
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-baltic_bridge}
+      # Production requires verified TLS to Postgres. This stack does not
+      # issue a database certificate — the k8s path does (infra/k8s/pg-tls.sh)
+      # and is the documented production orchestrator; compose keeps the
+      # traffic inside one host's docker bridge. That is a decision, not a
+      # default, so it has to be spelled out in .env.selfhost: no value, no
+      # start. Set it to false and give DATABASE_URL an sslmode=verify-full
+      # once you do issue a certificate here.
+      DATABASE_ALLOW_PLAINTEXT: ${DATABASE_ALLOW_PLAINTEXT:?set true/false in .env.selfhost — see the comment in docker-compose.selfhost.yml}
+      AUTH_SECRET: ${AUTH_SECRET:?set in .env.selfhost}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?set in .env.selfhost}
+      # S3 API served by self-hosted MinIO. S3_ENDPOINT must be the URL that
+      # BROWSERS can reach (presigned PUT/GET are signed against it).
+      S3_ENDPOINT: ${S3_ENDPOINT:?set in .env.selfhost}
+      S3_REGION: ${S3_REGION:-eu-north-1}
+      S3_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      S3_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+      S3_DOCUMENTS_BUCKET: ${S3_DOCUMENTS_BUCKET:-documents}
+      S3_FORCE_PATH_STYLE: "true"
+      # Own mail relay (Postfix/smarthost) — no SES, no mail SaaS.
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-smtp}
+      EMAIL_FROM: ${EMAIL_FROM:?set in .env.selfhost}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      # Self-hosted malware scanning of uploaded evidence.
+      MALWARE_SCANNER: ${MALWARE_SCANNER:-clamav}
+      CLAMAV_HOST: clamav
+      CLAMAV_PORT: "3310"
+      # pg-boss cron (expiry sweep, outbox dispatch, malware scan) runs here.
+      ENABLE_JOBS: "1"
+      CRON_SECRET: ${CRON_SECRET:-}
+
+volumes:
+  pgdata:
+  miniodata:
+  clamdb:

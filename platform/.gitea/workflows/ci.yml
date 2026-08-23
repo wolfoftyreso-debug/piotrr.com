@@ -1,0 +1,233 @@
+# Self-hosted CI (Appendix B). Same pipeline as the GitHub workflow, but
+# it runs on our own Gitea Actions runner and pushes to Gitea's built-in
+# container registry instead of ECR — nothing about a release leaves the
+# node.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
+
+      # Security gate. A production-severity finding fails the build, so a
+      # vulnerable dependency cannot reach the node. Dev-only tooling is
+      # excluded on purpose: an esbuild dev-server issue is not a
+      # production risk, and treating it as one trains people to ignore
+      # the gate.
+      - name: Dependency audit (production tree)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Secret scan (working tree and history)
+        run: bash scripts/audit-secrets.sh
+      - name: Brand check (Piotrr — no retired names on user surfaces)
+        run: bash scripts/brand-check.sh
+
+      # Image layers, not just the dependency tree. `npm audit` reads
+      # package.json; it cannot see a vulnerable libssl in the base image.
+      #
+      # The Trivy CLI rather than the trivy-action: the action is a
+      # third-party step running with repository credentials, the pinned
+      # tag I first used did not exist so CI failed at action resolution,
+      # and a self-hosted Gitea runner cannot be assumed to reach
+      # GitHub's action registry anyway. One mechanism for both pipelines.
+      #
+      # `docker save` + `--input` scans a tarball, so the scanner never
+      # needs the Docker socket mounted into it.
+      - name: Build runtime image for scanning
+        run: |
+          docker build --target runner -t baltic-bridge:scan .
+          docker save baltic-bridge:scan -o /tmp/image.tar
+
+      - name: Container scan
+        run: |
+          docker run --rm -v /tmp:/tmp aquasec/trivy:0.73.0 image \
+            --input /tmp/image.tar \
+            --exit-code 1 \
+            --ignore-unfixed \
+            --severity HIGH,CRITICAL \
+            --scanners vuln \
+            --no-progress
+
+  # Everything the unit job cannot prove: the schema builds from zero, the
+  # business flows hold against a real Postgres, the attack paths stay
+  # blocked, the HTTP surface answers as documented, and a browser can walk
+  # the three critical journeys. Before this job existed, CI verified less
+  # than half of what a local `npm run test:*` chain did — the constitution
+  # calls a pipeline that only builds the artifact incomplete, and it was.
+  integration:
+    runs-on: ubuntu-latest
+    # Needs a runner whose executor can start service containers
+    # (act_runner with the docker backend — the GITEA.md setup does).
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ci_baltic
+          POSTGRES_PASSWORD: ci-only-not-the-dev-default
+          POSTGRES_DB: baltic_bridge
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ci_baltic -d baltic_bridge"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      # Deliberately NOT baltic:baltic@localhost — the production-config
+      # guard refuses that exact substring as the development default, and
+      # the server step runs with NODE_ENV=production.
+      DATABASE_URL: postgres://ci_baltic:ci-only-not-the-dev-default@localhost:5432/baltic_bridge
+      # Presigning S3 URLs is client-side cryptography: the suites never
+      # contact object storage, but the SDK refuses to sign without
+      # credentials, so these exist and point at nothing.
+      S3_ENDPOINT: http://127.0.0.1:9000
+      S3_REGION: eu-north-1
+      S3_ACCESS_KEY_ID: ci
+      S3_SECRET_ACCESS_KEY: ci-secret
+      S3_DOCUMENTS_BUCKET: documents
+      S3_FORCE_PATH_STYLE: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Migrate from zero and seed
+        env:
+          # The known dev password, explicitly: e2e signs in with it. The
+          # seed generates a random one when this is absent — which is the
+          # production behaviour, tested in src/db/seed-support.test.ts.
+          SEED_STAFF_PASSWORD: change-me-now
+        run: |
+          npm run db:migrate
+          npm run db:seed
+          npm run db:seed-catalog
+          # The e2e specs walk real journeys through existing data — the
+          # RFQ flow dispatches to a demo supplier by name — so the demo
+          # set is part of the e2e fixture, exactly as in the RUNBOOK.
+          npm run db:seed-demo
+
+      - name: Business flows, attack paths, failure paths (real database)
+        run: |
+          npm run test:smoke
+          npm run test:flow
+          npm run test:security
+          npm run test:failure
+
+      - name: Build and start the production server
+        env:
+          NODE_ENV: production
+          # CI's Postgres is a loopback container with no TLS material;
+          # accepting plaintext is the escape hatch's intended use and is
+          # what the production guard requires be said out loud.
+          DATABASE_ALLOW_PLAINTEXT: "true"
+          EMAIL_PROVIDER: smtp
+          SMTP_HOST: localhost
+          METRICS_TOKEN: ci-scrape-token
+          PUBLIC_BASE_URL: http://127.0.0.1:3100
+        run: |
+          npm run build
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+          AUTH_SECRET="$(openssl rand -base64 36)" PORT=3100 HOSTNAME=127.0.0.1 \
+            NEXT_MANUAL_SIG_HANDLE=true \
+            nohup node .next/standalone/server.js > /tmp/server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:3100/api/readyz && break
+            sleep 2
+          done
+          curl -sf http://127.0.0.1:3100/api/readyz || { cat /tmp/server.log; exit 1; }
+
+      - name: HTTP surface audit
+        run: BASE=http://127.0.0.1:3100 bash scripts/audit-http.sh
+
+      - name: Contract check — live payloads against the published schema
+        run: BASE=http://127.0.0.1:3100 npm run test:contract
+
+      - name: Browser e2e — the three critical flows
+        run: |
+          npx playwright install --with-deps chromium
+          E2E_NO_SERVER=1 E2E_BASE_URL=http://127.0.0.1:3100 npx playwright test
+
+  deploy:
+    needs: [ci, integration]
+    if: gitea.ref == 'refs/heads/main' && gitea.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Skip cleanly when the registry is not wired up yet — mirrors the
+      # GitHub job's config gate. Without this, a push to `main` on a fresh
+      # Gitea instance ran `docker login ""` and broke the pipeline before
+      # any registry existed to push to.
+      - name: Check deploy configuration
+        id: cfg
+        env:
+          HOST: ${{ vars.REGISTRY_HOST }}
+          OWNER: ${{ vars.REGISTRY_OWNER }}
+          USER: ${{ vars.REGISTRY_USER }}
+          TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+        run: |
+          # Gate on every credential the later steps actually use — the
+          # login below reads REGISTRY_USER, so an instance with HOST/OWNER/
+          # TOKEN set but USER unset must NOT pass the gate and then fail on
+          # `docker login -u ""`. The skip notice lists the same four.
+          if [ -n "$HOST" ] && [ -n "$OWNER" ] && [ -n "$USER" ] && [ -n "$TOKEN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Deploy skipped — set REGISTRY_HOST, REGISTRY_OWNER, REGISTRY_USER vars and the REGISTRY_TOKEN secret."
+          fi
+
+      # The registry lives in the same Gitea instance that is running this
+      # job, so the only credential needed is the job's own token.
+      - name: Log in to the Gitea container registry
+        if: steps.cfg.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          echo "${{ secrets.REGISTRY_TOKEN }}" | \
+            docker login "${{ vars.REGISTRY_HOST }}" \
+              -u "${{ vars.REGISTRY_USER }}" --password-stdin
+
+      - name: Build and push
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          IMAGE: ${{ vars.REGISTRY_HOST }}/${{ vars.REGISTRY_OWNER }}/baltic-bridge
+        run: |
+          set -euo pipefail
+          # Two images per commit: the runner serves traffic, the build
+          # stage carries drizzle-kit for the migration Job.
+          docker build --target runner -t "$IMAGE:${GITHUB_SHA}" .
+          docker build --target build  -t "$IMAGE:${GITHUB_SHA}-migrate" .
+          docker push "$IMAGE:${GITHUB_SHA}"
+          docker push "$IMAGE:${GITHUB_SHA}-migrate"
+
+      - name: Roll out
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          IMAGE: ${{ vars.REGISTRY_HOST }}/${{ vars.REGISTRY_OWNER }}/baltic-bridge
+          # deploy.sh pulls the images into k3s and only takes the Gitea
+          # registry path when REGISTRY_USER *and* REGISTRY_TOKEN are set;
+          # without them it falls back to an ECR login, which is wrong on
+          # the self-hosted node and fails the pull after a successful push.
+          REGISTRY_USER: ${{ vars.REGISTRY_USER }}
+          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+        run: |
+          set -euo pipefail
+          # The runner shares the node, so it rolls out directly — no SSM
+          # hop needed as there is with the AWS/GitHub path.
+          BALTIC_BRIDGE_K8S=/opt/baltic-bridge/infra/k8s \
+            bash infra/k8s/deploy.sh "$IMAGE" "${GITHUB_SHA}"

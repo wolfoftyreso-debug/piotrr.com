@@ -1,0 +1,47 @@
+# Traefik (k3s default ingress). Patch the hosts in your overlay — see
+# overlays/prod. TLS: cert-manager ClusterIssuer (optional/cert-manager.yaml)
+# or your own certificates as a TLS secret.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: baltic-bridge
+  namespace: baltic-bridge
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    # Stamp a correlation id at the edge. The app echoes X-Request-Id on
+    # every response and records it on audit rows, but for public pages it
+    # can only *forward* an id it was given — so this middleware is what
+    # makes a request traceable end to end there. Traefik reference:
+    # a Headers middleware setting X-Request-Id, or the ingress
+    # controller's own request-id feature.
+    traefik.ingress.kubernetes.io/router.middlewares: baltic-bridge-request-id@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts: [www.example.com]
+      secretName: app-tls
+    - hosts: [files.example.com]
+      secretName: files-tls
+  rules:
+    - host: www.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app
+                port:
+                  number: 3000
+    # MinIO S3 API — must match S3_ENDPOINT exactly (presigned signatures
+    # include the host).
+    - host: files.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio
+                port:
+                  number: 9000

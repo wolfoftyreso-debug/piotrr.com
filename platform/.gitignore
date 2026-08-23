@@ -1,0 +1,41 @@
+# dependencies
+node_modules
+
+# next.js
+.next
+out
+
+# production
+build
+dist
+
+# env — secrets come from SSM/Secrets Manager, never the repo
+.env
+.env.*
+!.env.example
+!.env.selfhost.example
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
+
+# test artifacts
+coverage
+playwright-report
+test-results
+
+# terraform (infra/terraform)
+.terraform/
+*.tfstate*
+*.tfvars
+!*.tfvars.example
+
+# design canvas scratch (Claude Design deliverable lives as a hosted artifact,
+# not in the product repo; the seeded payload is ~2 MB). Re-seed from a fresh
+# session or by re-extracting the published artifact.
+*.dc.html
+canvas.json
+baltic-bridge-design.html

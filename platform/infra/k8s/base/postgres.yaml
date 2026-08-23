@@ -1,0 +1,141 @@
+# Self-managed PostgreSQL 16 — same one-node posture as the compose stack.
+# State lives on a PVC (k3s: local-path provisioner on the EBS data volume).
+#
+# TLS is required for every TCP connection (see the pg_hba below). The
+# server certificate comes from the `pg-tls` Secret, which infra/k8s/pg-tls.sh
+# issues; without it this pod does not start. That is deliberate — the
+# alternative failure mode is a database that quietly accepts plaintext.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pg-hba
+  namespace: baltic-bridge
+data:
+  # Two lines, and the omission is the point: there is no plain `host`
+  # entry, so a TCP client that does not start TLS is rejected by the
+  # server rather than trusted to have configured sslmode correctly. The
+  # app asking for verify-full and the server refusing anything less are
+  # two independent controls; either alone can be misconfigured.
+  #
+  # `local` (unix socket) stays trusted: it is how the image's own
+  # entrypoint bootstraps the cluster, how pg_isready answers the
+  # readiness probe, and how the nightly pg_dump runs inside the pod.
+  # Nothing outside the container can reach that socket.
+  pg_hba.conf: |
+    local   all   all                trust
+    hostssl all   all   all          scram-sha-256
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: baltic-bridge
+spec:
+  clusterIP: None
+  selector:
+    app: db
+  ports:
+    - port: 5432
+      name: postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+  namespace: baltic-bridge
+spec:
+  serviceName: db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      # PostgreSQL refuses to start if the private key is readable by
+      # group or world, and a Secret volume lands as root:root 0644 no
+      # matter what defaultMode says once fsGroup is in play. So copy the
+      # three files once, with the ownership and mode the server insists
+      # on, into a tmpfs that never touches disk.
+      initContainers:
+        - name: pg-tls-perms
+          image: postgres:16-alpine
+          command:
+            - sh
+            - -ec
+            - |
+              cp /src/tls.crt /src/tls.key /src/ca.crt /tls/
+              chown 70:70 /tls/tls.crt /tls/tls.key /tls/ca.crt
+              chmod 600 /tls/tls.key
+              chmod 644 /tls/tls.crt /tls/ca.crt
+          volumeMounts:
+            - name: pg-tls-src
+              mountPath: /src
+              readOnly: true
+            - name: pg-tls
+              mountPath: /tls
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          args:
+            - postgres
+            - -c
+            - ssl=on
+            - -c
+            - ssl_cert_file=/etc/pg-tls/tls.crt
+            - -c
+            - ssl_key_file=/etc/pg-tls/tls.key
+            - -c
+            - hba_file=/etc/pg-hba/pg_hba.conf
+            # TLS 1.2 is still the floor rather than 1.3 only: both ends
+            # here are ours and speak 1.3 (verified — pg_stat_ssl reports
+            # TLSv1.3), but pg_dump from an older client image should not
+            # fail closed during an incident.
+            - -c
+            - ssl_min_protocol_version=TLSv1.2
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: baltic-bridge-env
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+            - name: pg-tls
+              mountPath: /etc/pg-tls
+              readOnly: true
+            - name: pg-hba
+              mountPath: /etc/pg-hba
+              readOnly: true
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+      volumes:
+        - name: pg-tls-src
+          secret:
+            secretName: pg-tls
+        - name: pg-tls
+          emptyDir:
+            medium: Memory
+        - name: pg-hba
+          configMap:
+            name: pg-hba
+  volumeClaimTemplates:
+    - metadata:
+        name: pgdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 20Gi

@@ -1,0 +1,176 @@
+# Alerting rules.
+#
+# In `optional/` because this is a PrometheusRule, which only exists if
+# the Prometheus Operator is installed. Nothing in this repository
+# assumes it is. Without the operator, paste the `groups:` block below
+# into a plain Prometheus `rule_files:` entry — the rules themselves are
+# operator-independent.
+#
+# Every rule below fires on a series this application actually exposes
+# (see /api/metrics). None of them is aspirational: an alert that
+# references a metric nobody emits is silence dressed as coverage.
+#
+# Scrape config the rules assume:
+#   job_name: baltic-bridge
+#   metrics_path: /api/metrics
+#   authorization: { type: Bearer, credentials: <METRICS_TOKEN> }
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: baltic-bridge
+  namespace: baltic-bridge
+  labels:
+    app: app
+spec:
+  groups:
+    # -----------------------------------------------------------------
+    # Is it up? The questions the cluster can answer on its own.
+    # -----------------------------------------------------------------
+    - name: baltic-bridge.availability
+      rules:
+        - alert: AppScrapeDown
+          expr: up{job="baltic-bridge"} == 0
+          for: 3m
+          labels: { severity: critical }
+          annotations:
+            summary: "Piotrr is not answering scrapes"
+            description: >-
+              No metrics for 3 minutes. Either the pod is gone or it cannot
+              serve. Check `kubectl -n baltic-bridge get pods` and
+              /api/readyz — readiness fails while the database is
+              unreachable, which is a database incident, not an app one.
+
+        - alert: PodRestarting
+          expr: increase(kube_pod_container_status_restarts_total{namespace="baltic-bridge"}[15m]) > 2
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.pod }} restarted more than twice in 15 minutes"
+            description: >-
+              Liveness deliberately checks nothing external, so restarts are
+              not caused by a database outage. Look for OOM or a wedged
+              event loop.
+
+        - alert: EventLoopSaturated
+          expr: app_event_loop_lag_seconds > 1
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "Event loop lag above 1s"
+            description: >-
+              The signal the kubelet cannot see: CPU and memory look fine
+              while every request queues. Usually a synchronous hot path or
+              a runaway query.
+
+    # -----------------------------------------------------------------
+    # Is the work getting done? Background processing has no user
+    # watching it, so silence here is indistinguishable from success.
+    # -----------------------------------------------------------------
+    - name: baltic-bridge.jobs
+      rules:
+        - alert: JobRunnerDown
+          expr: jobs_runner_up == 0
+          for: 10m
+          labels: { severity: critical }
+          annotations:
+            summary: "The pg-boss runner is not attached"
+            description: >-
+              The app serves, but nothing expires documents, dispatches the
+              outbox, scans uploads or purges under GDPR. It retries with
+              backoff; ten minutes means it is not recovering.
+
+        - alert: JobsFailing
+          expr: rate(jobs_failed_total[15m]) > 0
+          for: 15m
+          labels: { severity: warning }
+          annotations:
+            summary: "Job {{ $labels.job }} is failing"
+            description: >-
+              Sustained failures for 15 minutes. A malware scan failing for
+              every upload means documents stay unscanned, and unscanned
+              documents are refused on download — so this surfaces to
+              suppliers as "my file will not open".
+
+        - alert: MalwareScanBacklog
+          expr: |
+            rate(jobs_completed_total{job="malware-scan"}[1h]) == 0
+            and jobs_started_total{job="malware-scan"} > 0
+          for: 1h
+          labels: { severity: warning }
+          annotations:
+            summary: "No malware scan has completed in an hour"
+            description: >-
+              Uploads stay `pending` and are not served. Check clamd
+              reachability before assuming the app is at fault.
+
+        - alert: SignInEmailsFailing
+          expr: increase(magic_link_send_failures_total[15m]) > 0
+          for: 15m
+          labels: { severity: critical }
+          annotations:
+            summary: "Sign-in link emails are not being delivered"
+            description: >-
+              Every one of these is a person who asked to sign in and got
+              nothing. The request deliberately still succeeds — a failure
+              that propagated would tell an attacker which addresses have
+              accounts — so this counter is the ONLY signal that the relay
+              is broken. Nobody can sign in by email until it is fixed.
+
+        - alert: BusinessMetricsStale
+          expr: business_gauges_stale == 1
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "Business gauges could not be read"
+            description: >-
+              The scrape reached the app but not the database. Technical
+              series are still trustworthy; the business ones are frozen.
+
+    # -----------------------------------------------------------------
+    # Is the business working? §19's question, which no infrastructure
+    # metric answers. A perfectly healthy pod can be doing nothing.
+    # -----------------------------------------------------------------
+    - name: baltic-bridge.business
+      rules:
+        - alert: VerificationQueueGrowing
+          expr: verification_cases{state="in_review"} > 25
+          for: 24h
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $value }} cases have sat in review for a day"
+            description: >-
+              Verification is the product. A queue that only grows means
+              ops capacity is the bottleneck, not the software — but it is
+              still the thing customers experience as the service failing.
+
+        - alert: OpsTaskBacklog
+          expr: ops_tasks_open > 200
+          for: 6h
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $value }} open ops tasks"
+            description: >-
+              Expiry warnings create tasks. A backlog this size means
+              documents will lapse before anyone chases them, and a lapsed
+              critical document hides the verified badge automatically.
+
+        - alert: EvidenceExpiringUnattended
+          expr: documents_expiring_30d > 0 and increase(verification_cases{state="verified"}[7d]) == 0
+          for: 12h
+          labels: { severity: warning }
+          annotations:
+            summary: "Evidence is expiring and nothing has been verified in a week"
+            description: >-
+              Badges will start dropping. Either renewals are not being
+              collected, or the review process has stopped.
+
+        - alert: NoRfqActivity
+          expr: increase(rfqs{status="new"}[7d]) == 0
+          for: 24h
+          labels: { severity: info }
+          annotations:
+            summary: "No new requests for a week"
+            description: >-
+              Informational, not a fault: at current volumes a quiet week is
+              plausible. It is here so a silent intake failure — a broken
+              form, a bounced notification — cannot hide behind that.

@@ -1,0 +1,20 @@
+# TLS termination for the self-hosted stack (see docker-compose.proxy.yml).
+# Hostnames come from .env.selfhost. To use your own certificates instead of
+# ACME, add:  tls /etc/caddy/certs/site.crt /etc/caddy/certs/site.key
+
+{
+	email {$ACME_EMAIL}
+}
+
+{$APP_DOMAIN} {
+	reverse_proxy app:3000
+}
+
+# MinIO S3 API — must match S3_ENDPOINT exactly (presigned signatures
+# include the host). Large uploads stream straight through.
+{$FILES_DOMAIN} {
+	reverse_proxy minio:9000
+	request_body {
+		max_size 200MB
+	}
+}

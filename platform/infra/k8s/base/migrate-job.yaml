@@ -1,0 +1,58 @@
+# Append-only Drizzle migrations. Re-apply on every release:
+#   kubectl -n baltic-bridge delete job migrate --ignore-not-found && kubectl apply -k .
+# Uses the "build" image target (has drizzle-kit/tsx), not the runtime image.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+  namespace: baltic-bridge
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        # The NetworkPolicy names this label when it allows a client to
+        # reach Postgres. Without it the Job is denied and the migration
+        # hangs, so the label is load-bearing, not decoration.
+        app: migrate
+    spec:
+      restartPolicy: OnFailure
+      # Previously a known gap: the `build` stage had no USER, so this
+      # Job ran drizzle-kit against the production database as root.
+      # The stage now runs as the image's `node` user (uid 1000) with a
+      # writable HOME, which CI verifies on every push by building the
+      # image — a build that needed root would fail there rather than in
+      # production.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: migrate
+      automountServiceAccountToken: false
+      containers:
+        - name: migrate
+          image: baltic-bridge-migrate:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["npm", "run", "db:migrate"]
+          envFrom:
+            - secretRef:
+                name: baltic-bridge-env
+          # Same DATABASE_URL as the app, so the same pinned CA has to be
+          # here — otherwise the migration is the one connection to the
+          # database that is not verified.
+          volumeMounts:
+            - name: pg-ca
+              mountPath: /etc/pg-tls
+              readOnly: true
+      volumes:
+        - name: pg-ca
+          secret:
+            secretName: pg-tls
+            items:
+              - key: ca.crt
+                path: ca.crt

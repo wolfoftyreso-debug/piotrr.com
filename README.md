@@ -13,7 +13,15 @@ strictly binary and never for sale.
 ## Contents
 
 - `index.html` — the landing page. A single, self-contained file: all CSS and
-  JS inline, fonts from Google Fonts, no build step and no dependencies.
+  JS inline, fonts from Google Fonts, no build step and no dependencies. This
+  is what GitHub Pages serves at the `piotrr.com` domain.
+- `symbols/` — the symbol-language gallery, also static.
+- `platform/` — the **product**: the Next.js verification & compliance engine
+  (modular monolith, TypeScript, Drizzle/Postgres). It is a full SSR
+  application and is **not** served by GitHub Pages; it builds and deploys
+  separately (container). Start at `platform/docs/AGENTS.md`. The marketing
+  site above and the platform app are intentionally kept in one repository but
+  deploy by different paths.
 
 ## Brand
 

@@ -1,0 +1,70 @@
+# Malware scanning for the documents bucket (Section 4.7).
+#
+# GuardDuty Malware Protection for S3 is not available in the self-owned
+# MinIO setup (Appendix B), so the scan runs against a ClamAV daemon we
+# operate. The app streams each uploaded object to clamd over INSTREAM and
+# records the verdict on the document row.
+#
+# First start downloads the signature database (a few minutes, ~1 GB of
+# memory once loaded). Uploads queue meanwhile and the sweep retries them.
+apiVersion: v1
+kind: Service
+metadata:
+  name: clamav
+  namespace: baltic-bridge
+spec:
+  selector:
+    app: clamav
+  ports:
+    - port: 3310
+      name: clamd
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: clamav
+  namespace: baltic-bridge
+spec:
+  serviceName: clamav
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clamav
+  template:
+    metadata:
+      labels:
+        app: clamav
+    spec:
+      containers:
+        - name: clamav
+          image: clamav/clamav:stable
+          ports:
+            - containerPort: 3310
+          volumeMounts:
+            - name: clamdb
+              mountPath: /var/lib/clamav
+          # freshclam needs time on a cold volume; do not restart the pod
+          # while the first signature download is running.
+          startupProbe:
+            tcpSocket:
+              port: 3310
+            periodSeconds: 15
+            failureThreshold: 40
+          livenessProbe:
+            tcpSocket:
+              port: 3310
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 200m
+              memory: 1536Mi
+            limits:
+              memory: 3Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: clamdb
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 4Gi

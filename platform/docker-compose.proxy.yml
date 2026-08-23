@@ -1,0 +1,32 @@
+# Optional TLS front for the self-hosted stack: Caddy terminates HTTPS for
+# the app and for MinIO (presigned URLs). Certificates via Let's Encrypt
+# (ACME) by default — the one deliberate external call in the stack; swap in
+# your own certs with a `tls cert key` directive in infra/proxy/Caddyfile
+# if you run an internal CA.
+#
+# Usage (merged with the base stack):
+#   docker compose -f docker-compose.selfhost.yml -f docker-compose.proxy.yml \
+#     --env-file .env.selfhost up -d --build
+
+services:
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?set in .env.selfhost}
+      FILES_DOMAIN: ${FILES_DOMAIN:?set in .env.selfhost}
+      ACME_EMAIL: ${ACME_EMAIL:?set in .env.selfhost}
+    volumes:
+      - ./infra/proxy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+      - caddyconfig:/config
+    depends_on:
+      - app
+      - minio
+
+volumes:
+  caddydata:
+  caddyconfig:

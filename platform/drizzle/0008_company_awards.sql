@@ -1,0 +1,1 @@
+ALTER TABLE "companies" ADD COLUMN "awards" text[] DEFAULT '{}' NOT NULL;

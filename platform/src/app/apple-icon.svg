@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Piotrr">
+  <rect width="180" height="180" fill="#2456ff"/>
+  <g transform="translate(40 34) scale(2.9)">
+    <path fill="#f6f4ef" fill-rule="evenodd" clip-rule="evenodd"
+      d="M14 8h19a16 16 0 0 1 0 32H22v16H14V8Zm8 10v12h11a6 6 0 0 0 0-12H22Z"/>
+  </g>
+</svg>

@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+patches:
+  # Set your real hostnames here (must match PUBLIC_BASE_URL / S3_ENDPOINT).
+  - target:
+      kind: Ingress
+      name: baltic-bridge
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: www.example.com
+      - op: replace
+        path: /spec/rules/1/host
+        value: files.example.com
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: www.example.com
+      - op: replace
+        path: /spec/tls/1/hosts/0
+        value: files.example.com

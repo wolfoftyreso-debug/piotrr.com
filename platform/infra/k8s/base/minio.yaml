@@ -1,0 +1,83 @@
+# Self-hosted S3 API (documents + portfolio images), versioned bucket.
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: baltic-bridge
+spec:
+  selector:
+    app: minio
+  ports:
+    - port: 9000
+      name: s3
+    - port: 9001
+      name: console
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio
+  namespace: baltic-bridge
+spec:
+  serviceName: minio
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: minio/minio:latest
+          args: ["server", "/data", "--console-address", ":9001"]
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001
+          envFrom:
+            - secretRef:
+                name: baltic-bridge-env
+          volumeMounts:
+            - name: miniodata
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: miniodata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 20Gi
+---
+# One-shot: create the private, versioned documents bucket
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-init
+  namespace: baltic-bridge
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mc
+          image: minio/mc:latest
+          envFrom:
+            - secretRef:
+                name: baltic-bridge-env
+          command:
+            - /bin/sh
+            - -c
+            - |
+              mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" &&
+              mc mb --ignore-existing "local/${S3_DOCUMENTS_BUCKET:-documents}" &&
+              mc version enable "local/${S3_DOCUMENTS_BUCKET:-documents}"

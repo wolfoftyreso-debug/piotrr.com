@@ -1,0 +1,175 @@
+# Network isolation for the data tier.
+#
+# k3s ships Flannel, which does NOT enforce NetworkPolicy on its own —
+# these objects are inert unless the cluster runs a policy-capable CNI.
+# k3s bundles one: install with `--flannel-backend=none --disable-network-policy`
+# and a CNI such as Calico, or use the built-in kube-router policy
+# controller (k3s >= 1.21 enforces NetworkPolicy by default via
+# kube-router unless it is disabled). Verify with the check in
+# infra/k8s/README.md before treating this file as a control — an
+# unenforced policy is documentation, not security.
+#
+# Without it, any pod scheduled on the node can open a socket to
+# Postgres, MinIO and clamd, all of which authenticate but none of which
+# should be reachable in the first place.
+
+# 1. Default deny for everything in the namespace, both directions.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: baltic-bridge
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+# 2. The app: reachable from the ingress controller, may talk to the data
+#    tier, DNS, and out to the internet (SMTP relay, registry pulls).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: app
+  namespace: baltic-bridge
+spec:
+  podSelector:
+    matchLabels:
+      app: app
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+        # A Prometheus in a monitoring namespace scrapes /api/metrics.
+        # Label the namespace `monitoring` or adjust this selector; the
+        # bearer token still applies, so this only opens the path.
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - port: 3000
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: db
+      ports:
+        - port: 5432
+    - to:
+        - podSelector:
+            matchLabels:
+              app: minio
+      ports:
+        - port: 9000
+    - to:
+        - podSelector:
+            matchLabels:
+              app: clamav
+      ports:
+        - port: 3310
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # Outbound TLS and SMTP submission. Narrow this to the relay's
+    # address once it is fixed; the point today is that the data tier
+    # below has no egress at all.
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: [169.254.169.254/32] # no instance metadata service
+      ports:
+        - port: 443
+        - port: 587
+        - port: 465
+---
+# 3. Postgres: only the app and the migration Job. No egress.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db
+  namespace: baltic-bridge
+spec:
+  podSelector:
+    matchLabels:
+      app: db
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: app
+        - podSelector:
+            matchLabels:
+              app: migrate
+      ports:
+        - port: 5432
+---
+# 4. MinIO: the app, plus the ingress for the presigned-URL host. The
+#    browser fetches evidence straight from files.<domain>, so this one
+#    is reachable from outside — the presigned signature is the guard.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: minio
+  namespace: baltic-bridge
+spec:
+  podSelector:
+    matchLabels:
+      app: minio
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: app
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 9000
+---
+# 5. clamd: reachable from the app only. Egress is NOT closed, and that
+#    is deliberate — the image runs freshclam, and a scanner with stale
+#    definitions is worse than an obvious hole because it still reports
+#    "clean". DNS and outbound HTTPS stay open for the definition feed.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: clamav
+  namespace: baltic-bridge
+spec:
+  podSelector:
+    matchLabels:
+      app: clamav
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: app
+      ports:
+        - port: 3310
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: [169.254.169.254/32]
+      ports:
+        - port: 443
+        - port: 80 # freshclam falls back to plain HTTP mirrors

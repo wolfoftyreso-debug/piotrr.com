@@ -1,0 +1,20 @@
+# Apply AFTER installing cert-manager:
+#   kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
+# ACME/Let's Encrypt is the one deliberate external call (certificates must
+# come from a CA browsers trust). Using an internal CA instead: create the
+# TLS secrets (app-tls, files-tls) yourself and drop the cert-manager
+# annotation from the Ingress.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: ops@example.com
+    privateKeySecretRef:
+      name: letsencrypt-account
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: traefik

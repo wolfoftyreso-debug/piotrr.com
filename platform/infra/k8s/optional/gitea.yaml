@@ -1,0 +1,163 @@
+# Self-hosted git, CI and container registry (Appendix B).
+#
+# Gitea replaces three external dependencies at once: GitHub for the
+# repository, GitHub Actions for CI, and ECR for images — its built-in
+# package registry serves OCI images, so the deploy pulls from the same
+# host that built them. Nothing about the release path leaves the node.
+#
+# Postgres: Gitea gets its OWN database inside the existing cluster
+# instance, not its own server. One deployable for the product, one
+# database server for the node.
+#
+# Namespaces: the forge lives in `baltic-forge`, not `baltic-bridge`. The
+# runner mounts the Docker socket to build images, which is effectively
+# root on the node — it has no business sharing a namespace boundary with
+# Postgres, MinIO and the documents bucket. It reaches the product
+# namespace only through the kubeconfig it is given, and reaches the
+# database through the cross-namespace service DNS name.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: baltic-forge
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea
+  namespace: baltic-forge
+spec:
+  selector:
+    app: gitea
+  ports:
+    - port: 3000
+      name: http
+    - port: 22
+      name: ssh
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gitea
+  namespace: baltic-forge
+spec:
+  serviceName: gitea
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      containers:
+        - name: gitea
+          image: gitea/gitea:1.22
+          ports:
+            - containerPort: 3000
+              name: http
+            - containerPort: 22
+              name: ssh
+          env:
+            - name: GITEA__database__DB_TYPE
+              value: postgres
+            - name: GITEA__database__HOST
+              value: postgres.baltic-bridge.svc.cluster.local:5432
+            - name: GITEA__database__NAME
+              value: gitea
+            - name: GITEA__database__USER
+              valueFrom:
+                secretKeyRef: { name: gitea-env, key: GITEA_DB_USER }
+            - name: GITEA__database__PASSWD
+              valueFrom:
+                secretKeyRef: { name: gitea-env, key: GITEA_DB_PASSWORD }
+            - name: GITEA__server__ROOT_URL
+              valueFrom:
+                secretKeyRef: { name: gitea-env, key: GITEA_ROOT_URL }
+            - name: GITEA__server__DOMAIN
+              valueFrom:
+                secretKeyRef: { name: gitea-env, key: GITEA_DOMAIN }
+            # Private forge: no open registration, no anonymous browsing.
+            - name: GITEA__service__DISABLE_REGISTRATION
+              value: "true"
+            - name: GITEA__service__REQUIRE_SIGNIN_VIEW
+              value: "true"
+            - name: GITEA__security__INSTALL_LOCK
+              value: "true"
+            - name: GITEA__actions__ENABLED
+              value: "true"
+            # The package registry is what replaces ECR.
+            - name: GITEA__packages__ENABLED
+              value: "true"
+          volumeMounts:
+            - name: giteadata
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: giteadata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 20Gi
+---
+# Gitea Actions runner. Registers against the Gitea instance above and
+# executes .gitea/workflows/*. Needs the Docker daemon socket to build
+# images, so it is deliberately the one privileged workload on the node —
+# keep it on its own namespace boundary if the cluster ever grows.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea-runner
+  namespace: baltic-forge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea-runner
+  template:
+    metadata:
+      labels:
+        app: gitea-runner
+    spec:
+      containers:
+        - name: runner
+          image: gitea/act_runner:0.2.11
+          env:
+            - name: GITEA_INSTANCE_URL
+              value: http://gitea:3000
+            - name: GITEA_RUNNER_REGISTRATION_TOKEN
+              valueFrom:
+                secretKeyRef: { name: gitea-env, key: RUNNER_REGISTRATION_TOKEN }
+            - name: GITEA_RUNNER_NAME
+              value: baltic-bridge-node
+            - name: GITEA_RUNNER_LABELS
+              value: ubuntu-latest
+            - name: DOCKER_HOST
+              value: unix:///var/run/docker.sock
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: runner-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
+        - name: runner-data
+          emptyDir: {}
