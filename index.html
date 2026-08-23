@@ -122,6 +122,31 @@
   .sec-head .eyebrow { display: inline-flex; align-items: center; gap: 8px; }
   .sec-head h2 { font-size: clamp(28px, 4vw, 40px); margin-top: 14px; }
   .sec-head p { margin-top: 15px; color: var(--fg-muted); font-size: 18px; }
+  /* --- added: symbol wall, two audiences, faq, languages --- */
+  .sym-wall { display:grid; grid-template-columns:repeat(auto-fill,minmax(102px,1fr)); gap:12px; margin-top:24px; }
+  .sym-tile { display:flex; flex-direction:column; align-items:center; gap:9px; padding:16px 10px; background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); text-align:center; }
+  .sym-tile svg { width:34px; height:34px; color:var(--ink-blue); }
+  .sym-tile .sl { font-size:12.5px; color:var(--fg-muted); line-height:1.3; }
+  .sym-more { margin-top:26px; display:flex; justify-content:center; }
+  .langs { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; justify-content:center; }
+  .lang-chip { display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border:1px solid var(--line); border-radius:999px; background:var(--card); font-size:14px; color:var(--fg-muted); box-shadow:var(--shadow); }
+  .lang-chip b { color:var(--fg); font-weight:600; }
+  .lang-chip svg { width:16px; height:16px; color:var(--ink-blue); }
+  .duo { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:24px; }
+  .duo .panel { background:var(--card); color:var(--fg); border:1px solid var(--line); border-radius:18px; padding:28px; box-shadow:var(--shadow); }
+  .duo .pi svg { width:30px; height:30px; color:var(--accent); }
+  .duo .panel h3 { font-size:22px; margin:14px 0 6px; color:var(--fg); }
+  .duo .plist { list-style:none; padding:0; margin:16px 0 0; display:flex; flex-direction:column; gap:12px; }
+  .duo .plist li { display:flex; gap:11px; align-items:flex-start; color:var(--fg-muted); font-size:15.5px; }
+  .duo .plist li svg { width:20px; height:20px; flex:none; margin-top:2px; color:var(--verified); }
+  .faq { max-width:760px; margin:24px auto 0; }
+  .faq details { border-bottom:1px solid var(--line); }
+  .faq summary { cursor:pointer; list-style:none; padding:18px 4px; font-weight:600; font-size:17.5px; display:flex; align-items:center; gap:12px; color:var(--fg); }
+  .faq summary::-webkit-details-marker { display:none; }
+  .faq summary svg { width:20px; height:20px; color:var(--accent); transition:transform .2s; flex:none; }
+  .faq details[open] summary svg { transform:rotate(90deg); }
+  .faq .fa { padding:0 4px 18px 36px; color:var(--fg-muted); font-size:16px; }
+  @media (max-width:720px){ .duo { grid-template-columns:1fr; } }
   .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s, transform .6s; }
   .reveal.in { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce){ .reveal { opacity: 1; transform: none; transition: none; } }
@@ -227,7 +252,7 @@
       <span class="wordmark" style="font-size:20px">PIOT<span class="rr">RR</span></span>
     </a>
     <nav class="nav-links" aria-label="Huvudmeny">
-      <a href="#hur">Så fungerar det</a><a href="#affaren">Affären</a><a href="#korridorer">Korridorer</a><a href="#yrken">Yrken</a>
+      <a href="#hur">Så fungerar det</a><a href="#affaren">Affären</a><a href="#korridorer">Korridorer</a><a href="#yrken">Yrken</a><a href="#symboler">Symboler</a><a href="#fragor">Frågor</a>
     </nav>
     <div class="nav-right">
       <button class="tgl" id="tgl" type="button" aria-label="Växla tema">
@@ -383,6 +408,94 @@
 </section>
 
 <!-- assurance + cta -->
+<section id="symboler" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal"><p class="eyebrow"><svg class="ic is-accent"><use href="#s-visa"/></svg> 110 symboler, en betydelse var</p><h2>Ett bildspråk för hela affären.</h2><p>Ett universellt bygg- och maskinikonspråk. Samma symbol betyder samma sak överallt — i sök, offert, avtal och kvitto. Den som inte läser svenska förstår ändå varje steg.</p></div>
+    <div class="sym-wall reveal">
+      <div class="sym-tile"><svg class="ic"><use href="#s-svetsare"/></svg><span class="sl">Svetsare</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-elektriker"/></svg><span class="sl">Elektriker</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-snickare"/></svg><span class="sl">Snickare</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-malare"/></svg><span class="sl">Målare</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-murare"/></svg><span class="sl">Murare</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-arbetslag"/></svg><span class="sl">Arbetslag</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-hjalm"/></svg><span class="sl">Hjälm</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-kran"/></svg><span class="sl">Kran</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-lastbil"/></svg><span class="sl">Lastbil</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-lagenhetshus"/></svg><span class="sl">Byggnad</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-forfragan"/></svg><span class="sl">Förfrågan</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-pris"/></svg><span class="sl">Pris</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-avtal"/></svg><span class="sl">Avtal</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-utbyte"/></svg><span class="sl">Utbyte</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-kvitto"/></svg><span class="sl">Kvitto</span></div>
+      <div class="sym-tile"><svg class="ic is-ok"><use href="#s-verifierad"/></svg><span class="sl">Verifierad</span></div>
+      <div class="sym-tile"><svg class="ic is-ok"><use href="#s-klart"/></svg><span class="sl">Klart</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-pagar"/></svg><span class="sl">Pågår</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-vantar"/></svg><span class="sl">Väntar</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-problem"/></svg><span class="sl">Problem</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-checklista"/></svg><span class="sl">Checklista</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-foto-bevis"/></svg><span class="sl">Fotobevis</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-kalender"/></svg><span class="sl">Kalender</span></div>
+      <div class="sym-tile"><svg class="ic"><use href="#s-meddelande"/></svg><span class="sl">Meddelande</span></div>
+    </div>
+    <div class="sym-more reveal"><a class="btn btn-ghost" href="/symbols/gallery.html"><svg class="ic"><use href="#s-oppna-stort"/></svg> Se alla 110 symboler</a></div>
+    <div class="langs reveal">
+      <span class="lang-chip"><svg class="ic"><use href="#s-sprak"/></svg> Åtta språk:</span>
+      <span class="lang-chip"><b>Svenska</b></span>
+      <span class="lang-chip"><b>English</b></span>
+      <span class="lang-chip"><b>Lietuvių</b></span>
+      <span class="lang-chip"><b>Latviešu</b></span>
+      <span class="lang-chip"><b>Eesti</b></span>
+      <span class="lang-chip"><b>Polski</b></span>
+      <span class="lang-chip"><b>Deutsch</b></span>
+      <span class="lang-chip"><b>Dansk</b></span>
+    </div>
+  </div>
+</section>
+
+<section id="parter" class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal"><p class="eyebrow"><svg class="ic"><use href="#s-utbyte"/></svg> Två sidor, en trygghet</p><h2>Byggd för båda parter.</h2></div>
+    <div class="duo">
+      <div class="panel reveal">
+        <span class="pi"><svg class="ic"><use href="#s-kopare"/></svg></span>
+        <h3>För köpare</h3>
+        <p style="color:var(--fg-muted)">Gör beställaransvaret hanterbart. Du ser exakt vad ”verifierad” betyder innan du skriver på.</p>
+        <ul class="plist">
+          <li><svg class="ic"><use href="#s-klart"/></svg>Endast leverantörer verifierade för din destination når din förfrågan.</li>
+          <li><svg class="ic"><use href="#s-klart"/></svg>Offerter jämförs med en verifieringsögonblicksbild fryst vid inlämning.</li>
+          <li><svg class="ic"><use href="#s-klart"/></svg>F-skatt, A1, ID06, försäkring och certifikat — granskade mot originalen.</li>
+          <li><svg class="ic"><use href="#s-klart"/></svg>Ett ops-team kvalificerar varje förfrågan. Concierge, inte självbetjäning.</li>
+        </ul>
+      </div>
+      <div class="panel reveal">
+        <span class="pi"><svg class="ic"><use href="#s-arbetslag"/></svg></span>
+        <h3>För leverantörer</h3>
+        <p style="color:var(--fg-muted)">Bevisa er efterlevnad en gång — bli synlig för köpare i hela Norden.</p>
+        <ul class="plist">
+          <li><svg class="ic"><use href="#s-klart"/></svg>En permanent, verifierad profil på piotrr.com.</li>
+          <li><svg class="ic"><use href="#s-klart"/></svg>Ladda upp handlingar en gång; vi håller reda på utgångsdatum åt er.</li>
+          <li><svg class="ic"><use href="#s-klart"/></svg>Publicera lediga lag: yrke, antal, certifikat, tidigaste start.</li>
+          <li><svg class="ic"><use href="#s-klart"/></svg>Verifieringen är binär och aldrig till salu — er integritet är varumärket.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fragor" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal"><p class="eyebrow"><svg class="ic is-accent"><use href="#s-fraga"/></svg> Det man brukar undra</p><h2>Frågor &amp; svar.</h2></div>
+    <div class="faq reveal">
+      <details><summary><svg class="ic"><use href="#s-framat"/></svg>Vad betyder ”verifierad”?</summary><div class="fa">Att vi granskat företagets handlingar mot hemlandets och destinationslandets myndigheter — F-skatt, A1 per utstationerad, utstationeringsanmälan, ID06, ansvarsförsäkring, kollektivavtalsstatus och yrkescertifikat. Verifiering är binär: verifierad för en korridor, eller inte. Aldrig nivåer, aldrig till salu.</div></details>
+      <details><summary><svg class="ic"><use href="#s-framat"/></svg>Hur hjälper det med beställaransvaret?</summary><div class="fa">Som köpare bär du ett ansvar för att den du anlitar sköter skatter, försäkring och utstationeringsregler. Piotrr samlar bevisen på ett ställe, granskade mot originalen, med en verifieringsögonblicksbild fryst vid varje offert — så att du kan visa vad som gällde när du fattade beslutet.</div></details>
+      <details><summary><svg class="ic"><use href="#s-framat"/></svg>Gäller en verifiering överallt?</summary><div class="fa">Nej. Verifiering är destinationsmedveten. En leverantör verifierad för Sverige är inte automatiskt verifierad för Tyskland — varje korridor har sin egen kravkatalog med rätt myndigheter. En leverantör kan aldrig skickas till en arbetsplats i ett land den inte är verifierad för.</div></details>
+      <details><summary><svg class="ic"><use href="#s-framat"/></svg>Var lagras uppgifterna?</summary><div class="fa">Inom EU. Plattformen är byggd för GDPR från grunden: PII är märkt i schemat, känsliga handlingar ligger i en separat, versionshanterad lagring, och varje beslut skrivs till en oföränderlig verifieringskedja. Du kan exportera dina egna uppgifter när som helst.</div></details>
+      <details><summary><svg class="ic"><use href="#s-framat"/></svg>Måste jag läsa svenska?</summary><div class="fa">Nej. Gränssnittet finns på åtta språk, och symbolspråket följer varje steg — samma bild betyder samma sak överallt. Texten bredvid är alltid valfri, så affären är begriplig oavsett vilket språk du läser.</div></details>
+      <details><summary><svg class="ic"><use href="#s-framat"/></svg>Är det självbetjäning?</summary><div class="fa">Nej — det är en concierge-modell. Ett riktigt ops-team onboardar leverantörer, granskar handlingar och kvalificerar varje förfrågan innan den skickas vidare. Sekvensen är strategin: verifiera först, matcha sedan, leverera sist.</div></details>
+    </div>
+  </div>
+</section>
+
 <section id="begar" style="padding-top:0">
   <div class="wrap">
     <div class="assure reveal">
