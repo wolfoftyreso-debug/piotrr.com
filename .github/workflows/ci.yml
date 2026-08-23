@@ -1,0 +1,270 @@
+name: platform CI
+
+# The product lives in platform/ alongside the static marketing site at the
+# repo root. GitHub Actions only runs workflows from the ROOT .github/workflows,
+# so this file is the one that actually executes; it mirrors the app's own
+# pipeline (platform/.github/workflows/ci.yml, kept for when the app stands
+# alone) but scopes every step to platform/.
+#
+#  - `paths:` so a marketing-only change to index.html does not spin up the
+#    full database + browser pipeline.
+#  - `working-directory: platform` on every run step.
+#  - `cache-dependency-path` points npm's cache at platform/package-lock.json
+#    (there is no lockfile at the repo root).
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "platform/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "platform/**"
+      - ".github/workflows/ci.yml"
+
+defaults:
+  run:
+    working-directory: platform
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
+
+      # Security gate. A production-severity finding fails the build, so a
+      # vulnerable dependency cannot reach the node. Dev-only tooling is
+      # excluded on purpose: an esbuild dev-server issue is not a
+      # production risk, and treating it as one trains people to ignore
+      # the gate.
+      - name: Dependency audit (production tree)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Secret scan (working tree and history)
+        run: bash scripts/audit-secrets.sh
+      - name: Brand check (Piotrr — no retired names on user surfaces)
+        run: bash scripts/brand-check.sh
+
+      # Image layers, not just the dependency tree. `npm audit` reads
+      # package.json; it cannot see a vulnerable libssl in the base image.
+      # `docker save` + `--input` scans a tarball, so the scanner never
+      # needs the Docker socket mounted into it.
+      - name: Build runtime image for scanning
+        run: |
+          docker build --target runner -t baltic-bridge:scan .
+          docker save baltic-bridge:scan -o /tmp/image.tar
+
+      - name: Container scan
+        run: |
+          docker run --rm -v /tmp:/tmp aquasec/trivy:0.73.0 image \
+            --input /tmp/image.tar \
+            --exit-code 1 \
+            --ignore-unfixed \
+            --severity HIGH,CRITICAL \
+            --scanners vuln \
+            --no-progress
+
+  # Everything the unit job cannot prove: the schema builds from zero, the
+  # business flows hold against a real Postgres, the attack paths stay
+  # blocked, the HTTP surface answers as documented, and a browser can walk
+  # the three critical journeys.
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ci_baltic
+          POSTGRES_PASSWORD: ci-only-not-the-dev-default
+          POSTGRES_DB: baltic_bridge
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ci_baltic -d baltic_bridge"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      # Deliberately NOT baltic:baltic@localhost — the production-config
+      # guard refuses that exact substring as the development default, and
+      # the server step runs with NODE_ENV=production.
+      DATABASE_URL: postgres://ci_baltic:ci-only-not-the-dev-default@localhost:5432/baltic_bridge
+      # Presigning S3 URLs is client-side cryptography: the suites never
+      # contact object storage, but the SDK refuses to sign without
+      # credentials, so these exist and point at nothing.
+      S3_ENDPOINT: http://127.0.0.1:9000
+      S3_REGION: eu-north-1
+      S3_ACCESS_KEY_ID: ci
+      S3_SECRET_ACCESS_KEY: ci-secret
+      S3_DOCUMENTS_BUCKET: documents
+      S3_FORCE_PATH_STYLE: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - run: npm ci
+
+      - name: Migrate from zero and seed
+        env:
+          # The known dev password, explicitly: e2e signs in with it. The
+          # seed generates a random one when this is absent — which is the
+          # production behaviour, tested in src/db/seed-support.test.ts.
+          SEED_STAFF_PASSWORD: change-me-now
+        run: |
+          npm run db:migrate
+          npm run db:seed
+          npm run db:seed-catalog
+          # The e2e specs walk real journeys through existing data — the
+          # RFQ flow dispatches to a demo supplier by name — so the demo
+          # set is part of the e2e fixture, exactly as in the RUNBOOK.
+          npm run db:seed-demo
+
+      - name: Business flows, attack paths, failure paths (real database)
+        run: |
+          npm run test:smoke
+          npm run test:flow
+          npm run test:security
+          npm run test:failure
+
+      - name: Build and start the production server
+        env:
+          NODE_ENV: production
+          # CI's Postgres is a loopback container with no TLS material;
+          # accepting plaintext is the escape hatch's intended use and is
+          # what the production guard requires be said out loud.
+          DATABASE_ALLOW_PLAINTEXT: "true"
+          EMAIL_PROVIDER: smtp
+          SMTP_HOST: localhost
+          METRICS_TOKEN: ci-scrape-token
+          PUBLIC_BASE_URL: http://127.0.0.1:3100
+        run: |
+          npm run build
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+          AUTH_SECRET="$(openssl rand -base64 36)" PORT=3100 HOSTNAME=127.0.0.1 \
+            NEXT_MANUAL_SIG_HANDLE=true \
+            nohup node .next/standalone/server.js > /tmp/server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:3100/api/readyz && break
+            sleep 2
+          done
+          curl -sf http://127.0.0.1:3100/api/readyz || { cat /tmp/server.log; exit 1; }
+
+      - name: HTTP surface audit
+        run: BASE=http://127.0.0.1:3100 bash scripts/audit-http.sh
+
+      - name: Contract check — live payloads against the published schema
+        run: BASE=http://127.0.0.1:3100 npm run test:contract
+
+      - name: Browser e2e — the three critical flows
+        run: |
+          npx playwright install --with-deps chromium
+          E2E_NO_SERVER=1 E2E_BASE_URL=http://127.0.0.1:3100 npx playwright test
+
+  # Build the image, push it to ECR, roll the k3s deployment over via SSM.
+  # Runs only on the default branch, and only once the account is wired up:
+  # until the AWS repository variables exist the job is skipped, so CI stays
+  # green on a fresh clone.
+  deploy:
+    needs: [ci, integration]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC: no long-lived AWS keys in GitHub
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check deploy configuration
+        id: cfg
+        env:
+          ROLE: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          REPO: ${{ vars.ECR_REPOSITORY }}
+          NODE: ${{ vars.DEPLOY_INSTANCE_ID }}
+        run: |
+          if [ -n "$ROLE" ] && [ -n "$REPO" ] && [ -n "$NODE" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Deploy skipped — set AWS_DEPLOY_ROLE_ARN, ECR_REPOSITORY and DEPLOY_INSTANCE_ID."
+          fi
+
+      - name: Configure AWS credentials
+        if: steps.cfg.outputs.ready == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'eu-north-1' }}
+
+      - name: Log in to ECR
+        if: steps.cfg.outputs.ready == 'true'
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          REPO: ${{ vars.ECR_REPOSITORY }}
+        run: |
+          set -euo pipefail
+          # Two images, same commit tag: the runner serves traffic, the build
+          # stage carries drizzle-kit for the migration Job.
+          docker build --target runner -t "$REPO:${GITHUB_SHA}" .
+          docker build --target build  -t "$REPO:${GITHUB_SHA}-migrate" .
+          docker push "$REPO:${GITHUB_SHA}"
+          docker push "$REPO:${GITHUB_SHA}-migrate"
+
+      - name: Roll out on the node
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          REPO: ${{ vars.ECR_REPOSITORY }}
+          NODE: ${{ vars.DEPLOY_INSTANCE_ID }}
+          REGION: ${{ vars.AWS_REGION || 'eu-north-1' }}
+        run: |
+          set -euo pipefail
+          # The node owns the rollout logic (infra/k8s/deploy.sh): pull both
+          # images, run the append-only migrations to completion, then roll
+          # the app. A failed migration fails the deploy.
+          #
+          # NOTE: since the move into platform/, the app's infra/ lives at
+          # platform/infra on a checkout of THIS repo. When wiring deploy,
+          # point the node at the platform/ subdir (e.g. the node clones this
+          # repo and runs from /opt/.../platform). This job stays skipped until
+          # the AWS_* repository variables are set, so nothing runs until then.
+          command_id=$(aws ssm send-command \
+            --instance-ids "$NODE" \
+            --document-name AWS-RunShellScript \
+            --comment "deploy ${GITHUB_SHA}" \
+            --parameters commands="[
+              \"set -euo pipefail\",
+              \"cd /opt/baltic-bridge && git fetch --depth 1 origin ${GITHUB_SHA} && git checkout --detach FETCH_HEAD\",
+              \"AWS_REGION=$REGION bash infra/k8s/deploy.sh $REPO ${GITHUB_SHA}\"
+            ]" \
+            --query 'Command.CommandId' --output text)
+
+          echo "SSM command: $command_id"
+          # Poll until the command leaves the running states.
+          for _ in $(seq 1 60); do
+            status=$(aws ssm get-command-invocation \
+              --command-id "$command_id" --instance-id "$NODE" \
+              --query 'Status' --output text 2>/dev/null || echo Pending)
+            case "$status" in
+              Success) echo "rollout ok"; exit 0 ;;
+              Failed|Cancelled|TimedOut)
+                aws ssm get-command-invocation --command-id "$command_id" \
+                  --instance-id "$NODE" --query 'StandardErrorContent' --output text
+                exit 1 ;;
+            esac
+            sleep 10
+          done
+          echo "rollout did not finish within 10 minutes"; exit 1
